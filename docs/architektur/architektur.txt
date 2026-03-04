@@ -1,0 +1,9 @@
+Vorläufige Struktur:
+
+Landing Page / Home Page (Einladendes Design / Info zur Website [kleiner "Das sind wir" oder "Funktionen dieser Website" Text])
+Registrieren
+Anmelden (Möglichkeit für Weiterleitung zu Registrierung falls kein Acc vorhanden)
+Uploads  (Mehrfachupload mind 5 Medien / Hinzufügen von Titel und Tags)
+Galerie Public (Suchfunktion mit versch. Filtern z.B. Tags, Titel, Nutzer, Medientyp, Dateityp)
+Galerie Privat (Anzeige aller Medien in DB / Löschen von Medien / Änderung von Titel und Tags spezifischer Medien )
+Seite um Tags zu bearbeiten (zur DB Hinzufügen / Löschen / Verändern)
