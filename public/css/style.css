@@ -1,0 +1,136 @@
+/* Globale Variablen ========================================================*/
+:root {
+	--primary_1: #D4CFC5;
+	--primary_2: #B890A3;
+	--primary_3: #9C93BB;
+	--neutral_1: #F1F5F9;
+	--neutral_2: #CBD5E1;
+	--neutral_3: #331155;
+	--accent_1: #3B92F6;
+	--accent_2: #22C55E;
+	--accent_3: #F97316;
+	--accent_4: #F43F5E;
+	--font: "Inter", sans-serif;
+	--font_color: black;
+}
+
+/* CSS-Styling für die Schriftarten =========================================*/
+h1 {
+	color: var(--font_color);
+	font-family: var(--font);
+	font-size: 48px;
+	font-weight: bold;
+	line-height: 1.2;
+}
+
+h2 {
+	color: var(--font_color);;
+	font-family: var(--font);
+	font-size: 32px;
+	font-weight: bold;
+	line-height: 1.3;
+}
+
+h3 {
+	color: var(--font_color);;
+	font-family: var(--font);
+	font-size: 24px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+p {
+	color: var(--font_color);;
+	font-family: var(--font);
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.5;
+}
+
+.small {
+	color: var(--font_color);;
+	font-family: var(--font);
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.5;
+}
+
+/* CSS-Styling für den Hauptbereich =========================================*/
+body {
+	background-color: var(--primary_1);
+	margin: 0;
+}
+
+/* CSS-Styling für die Kopfzeile ============================================*/
+header {
+	background-color: var(--primary_2);
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between; 
+	align-items: center;
+}
+
+.dropdown_menu {
+	position: relative; 
+	display: inline-block;
+}
+
+.menu_button { 
+	width: 30px; 
+	height: 22px; 
+	display: flex; 
+	flex-direction: column; 
+	justify-content: space-between; 
+	background: none; 
+	border: none; 
+	cursor: pointer; 
+	padding: 0;
+} 
+
+.menu_button span { 
+	display: block;
+	height: 5px;
+	width: 100%;
+	background-color: black; 
+	border-radius: 2px; 
+}
+
+.dropdown_content { 
+	display: none; 
+	position: absolute;
+	background-color: var(--neutral_1); 
+	width: 120px;
+	list-style: none; 
+	padding-left: 0;
+} 
+
+.dropdown_content li:hover { 
+	background-color: var(--neutral_2);
+} 
+
+.dropdown_content li a { 
+	display: block; 
+	padding: 5px;
+	text-decoration: none;
+	color: black;
+} 
+
+.dropdown_content.show { 
+	display: block; 
+}
+
+.login_button {
+	display: inline-block; 
+	background-color: var(--neutral_1);
+	text-decoration: none;
+	border-radius: 5px;
+	border-style: solid;
+	border-color: var(--neutral_2);
+	padding-left: 20px;
+	padding-right: 20px;
+	cursor: pointer; 
+}
+
+.login_button:hover {
+	background-color: var(--neutral_2);
+}
