@@ -8,7 +8,7 @@
 </head>
 <body>
 	<header>
-		<?php include 'header.php'; ?>
+		<?php include  __DIR__ . '../../src/includes/header.php'; ?>
 	</header>
 	<section>
 		<h1>H1</h1>
