@@ -9,7 +9,7 @@
 	</button>
 	<!-- Menüinhalt -->	
 	<ul class="dropdown_content" id="dropdown_elements">
-	  <li><a href="index.php">Startseite</a></li>
+	  <li><a href="/public/index.php">Startseite</a></li>
 	  <li>
         <a href="#" onclick="toggle_submenu()">Meine Medien ></a>
 	      <ul class="dropdown_content" id="dropdown_subelements">
@@ -36,7 +36,7 @@
 	
 </header>
 
-<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="/public/css/style.css">
 
 <script type="text/javascript">
 	// Burger-Menue ausklappen
