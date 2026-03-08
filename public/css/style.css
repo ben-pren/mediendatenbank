@@ -101,6 +101,33 @@ body {
 	background-color: var(--neutral_2);
 }
 
+/* CSS-Styling für den Hauptbereich von media_list.php ======================*/
+.media_list {
+	max-width: 30%;
+}
+
+.media_list li:hover {
+	background-color: var(--neutral_2);
+}
+
+.list_item {
+	display: flex;
+	align-items: center;
+}
+
+.media_list img {
+	max-width: 10%;
+	align
+}
+
+.media_list a {
+	display: flex;
+	align-items: center; 
+	padding: 5px;
+	text-decoration: none;
+	color: black;
+}
+
 /* CSS-Styling für die Kopfzeile ============================================*/
 header {
 	background-color: var(--primary_2);
