@@ -41,7 +41,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `MedienDB`.`Medium` (
   `MediumID` INT NOT NULL AUTO_INCREMENT,
   `Titel` VARCHAR(100) NOT NULL,
-  `Medienart` ENUM('BIld', 'Video', 'Hoerbuch', 'eBook') NOT NULL,
+  `Medienart` ENUM('Bild', 'Video', 'Hoerbuch', 'eBook') NOT NULL,
   `Datentyp` VARCHAR(45) NOT NULL,
   `Groesse` VARCHAR(45) NOT NULL,
   `Path` VARCHAR(100) NOT NULL,
