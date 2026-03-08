@@ -65,7 +65,40 @@ p {
 /* CSS-Styling für den Hauptbereich =========================================*/
 body {
 	background-color: var(--primary_1);
-	margin: 0;
+}
+
+
+/* CSS-Styling für den Hauptbereich von gallery.php =========================*/
+.media_details {
+	display: flex;
+	flex-direction: row;
+}
+
+.media {
+	max-width: 40%;
+	border: solid;
+}
+
+.media_details table {
+	display: block;
+	margin-left: 20px;
+	width: 40%;
+}
+
+.media_options {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: flex-start;
+	width: 20%;
+}
+
+.options {
+	width: 50px;
+}
+
+.options:hover {
+	background-color: var(--neutral_2);
 }
 
 /* CSS-Styling für die Kopfzeile ============================================*/
