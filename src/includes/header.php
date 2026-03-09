@@ -13,7 +13,7 @@
 	  <li>
         <a href="#" onclick="toggle_submenu()">Meine Medien ></a>
 	      <ul class="dropdown_content" id="dropdown_subelements">
-            <li><a href="#">Alle</a></li>
+            <li><a href="/MedienDB/src/pages/media_list.php">Alle</a></li>
 	    	<li><a href="#">Bilder</a></li>
 	     	<li><a href="#">Videos</a></li>
             <li><a href="#">Hörbücher</a></li>
@@ -49,4 +49,5 @@
 		document.getElementById("dropdown_subelements").classList.toggle("show");
 	}
 </script>
+
 
