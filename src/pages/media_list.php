@@ -24,7 +24,7 @@
         // Ausgabe der Individuellen Datensaetze
 		while ($entry = $result->fetch_assoc()) {
 			printf("<li>
-						<a href=''#'>
+						<a href='#'>
 							<img class='media_preview' src='/public/icons/benutzer.svg' alt='Error'>
 							<p>%s</p>
 						</a>			
