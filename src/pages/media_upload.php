@@ -1,8 +1,6 @@
 <?php
 require_once '../includes/auth.php';
 require_once '../config/db.php';
-
-
 //Funktionen
 function formatBytes($bytes, $precision = 2) {
     $units = ['B', 'KB', 'MB', 'GB'];
@@ -28,8 +26,20 @@ function typeToMedia($datatype) {
     }
     return $medientyp;
 }
+
+// Abbrechen von Upload und löschen von Sessiondaten sowie temporären Uploads
+if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
+            foreach ($_SESSION['temp_uploads'] as $datei) {
+                $media_path = substr($datei['temp_path'], 2);
+                $delte_path = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src" . $media_path;
+                unlink($delte_path);
+            }
+            unset($_SESSION['temp_uploads']);
+}
+
+
 // permanentes speichern in DB
-$upload_ziel = "../UserUploads/";
+$upload_ziel = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src" . "/UserUploads/";
 
 if (!file_exists($upload_ziel)) {
     mkdir($upload_ziel, 0777, true);
@@ -65,8 +75,7 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
 
 
 //Temporäres Speichern der Datein um vor Abbruch zu schützen und Titel zu vergeben
-if(isset($_FILES['userfiles'])) {
-    
+if(isset($_FILES['userfiles']) && !isset($_SESSION['temp_uploads'])){ 
    $files = $_FILES['userfiles'];
    $filecount = count($files['name']);
    
@@ -136,6 +145,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
           name="userfiles[]" 
           multiple 
           accept=".png, .jpg, .jpeg , .mp3, .mp4, .html"
+          required
         >
         <button type="submit">Upload vorbereiten</button>
       </form>
@@ -164,6 +174,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
             >  <br>
         <?php }?>
         <button type="submit" name="hochladen">Dateien hochladen</button>
+        <button type="submit" name="abbrechen">Upload abbrechen</button>
       </form>
     <?php }?>
 
@@ -171,3 +182,5 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
   
 </body>
 </html>
+
+
