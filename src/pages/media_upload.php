@@ -181,7 +181,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
 </main>
 
 <footer>
-    <?php include  __DIR__ . '/../src/includes/footer.php'; ?>
+    <?php include  __DIR__ . '/../includes/footer.php'; ?>
 </footer>
 </body>
 </html>
