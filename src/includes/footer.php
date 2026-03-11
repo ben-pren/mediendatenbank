@@ -1,1 +1,1 @@
-<p>&copy; 2026 MedienHub</p>
+<div> &copy; <?php echo date('Y');?> MedienHub</div>
