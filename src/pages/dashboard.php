@@ -12,11 +12,16 @@ require_once __DIR__ . "/../includes/auth.php";
 </head>
 <body>
     <header>
-		<?php include  __DIR__ . '/../includes/header.php'; ?>
-	</header>
+        <?php include  __DIR__ . '/../includes/header.php'; ?>    
+    </header>
 
-    <h1>Dashboard</h1>
-    <p>Willkommen, <?php echo $_SESSION["Benutzername"]; ?>!</p>
+    <section>
+        <h1>Dashboard</h1>
+        <p>Willkommen, <?php echo $_SESSION["Benutzername"]; ?>!</p>
+    </section>
 
+    <footer>
+        <?php include  __DIR__ . '/../src/includes/footer.php'; ?>
+    </footer>
 </body>
 </html>

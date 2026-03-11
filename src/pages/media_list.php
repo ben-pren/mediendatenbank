@@ -4,12 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Mediendatenbank</title>
-	<link rel="stylesheet" type="text/css" href="/public/css/style.css">
+	<link rel="stylesheet" type="text/css" href="../../public/css/style.css">
 </head>
 <body>
 	<header>
-		<?php include  __DIR__ . '/../../src/includes/header.php'; ?>
+		<?php include  __DIR__ . '/../includes/header.php'; ?>
 	</header>
+	
 	<section>
 		<?php
 		require_once __DIR__ . "/../config/db.php";
@@ -25,7 +26,7 @@
 		while ($entry = $result->fetch_assoc()) {
 			printf("<li>
 						<a href='#'>
-							<img class='media_preview' src='/public/icons/benutzer.svg' alt='Error'>
+							<img class='media_preview' src='../../public/icons/benutzer.svg' alt='Error'>
 							<p>%s</p>
 						</a>			
 					</li>"
@@ -37,7 +38,7 @@
 	</section>
 
 	<footer>
-		<p>Gruppenarbeit WEB42</p>
+		<?php include  __DIR__ . '/../src/includes/footer.php'; ?>
 	</footer>
 </body>
 </html>

@@ -11,6 +11,7 @@
 	<header>
 		<?php include  __DIR__ . '/../src/includes/header.php'; ?>
 	</header>
+	
 	<section>
 		<h1>H1</h1>
 		<h2>H2</h2>
@@ -18,8 +19,9 @@
 		<p>P</p>
 		<p class="small">P(klein)</p>
 	</section>
+
 	<footer>
-		<p>Gruppenarbeit WEB42</p>
+		<?php include  __DIR__ . '/../src/includes/footer.php'; ?>
 	</footer>
 </body>
 </html>

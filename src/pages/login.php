@@ -7,35 +7,35 @@ $fehler = "";
 
 /* Prüfen, ob Login Formular per POST abgeschickt wurde */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $benutzername = trim($_POST["benutzername"]);
-    $passwort = trim($_POST["passwort"]);
+	$benutzername = trim($_POST["benutzername"]);
+	$passwort = trim($_POST["passwort"]);
 
 
-/*Felder auf Inhalt prüfen*/     
-    if (empty($benutzername) || empty($passwort)) {
-        $fehler = "Bitte einen gültigen Benutzername und Passwort eingeben.";
-    } else {
-/*Datenbankabgleich und Weiterleitung auf Dashboard*/
-        $sql = "SELECT * FROM nutzer WHERE Benutzername = '$benutzername'";
-        $result = mysqli_query($connection,$sql);
+	/*Felder auf Inhalt prüfen*/     
+	if (empty($benutzername) || empty($passwort)) {
+		$fehler = "Bitte einen gültigen Benutzername und Passwort eingeben.";
+	} else {
+		/*Datenbankabgleich und Weiterleitung auf Dashboard*/
+		$sql = "SELECT * FROM nutzer WHERE Benutzername = '$benutzername'";
+		$result = mysqli_query($connection,$sql);
 
-        if (mysqli_num_rows($result) > 0){
-            $nutzer = mysqli_fetch_assoc($result);
+		if (mysqli_num_rows($result) > 0){
+			$nutzer = mysqli_fetch_assoc($result);
 
-            if ($passwort == $nutzer["Passwort"]) {
-                $_SESSION["NutzerID"] = $nutzer["NutzerID"];
-                $_SESSION["Benutzername"] = $nutzer["Benutzername"];
-                $_SESSION["Rolle"] = $nutzer["Rolle"];
+			if ($passwort == $nutzer["Passwort"]) {
+				$_SESSION["NutzerID"] = $nutzer["NutzerID"];
+				$_SESSION["Benutzername"] = $nutzer["Benutzername"];
+				$_SESSION["Rolle"] = $nutzer["Rolle"];
 
-                    header("Location: dashboard.php");
-                    exit();
-                } else { 
-                    $fehler = "Das eingegebene Passwort ist falsch.";
-                }
-        } else {
-            $fehler = "Benutzername nicht gefunden.";
-        }
-    }
+				header("Location: dashboard.php");
+				exit();
+			} else { 
+				$fehler = "Das eingegebene Passwort ist falsch.";
+			}
+		} else {
+			$fehler = "Benutzername nicht gefunden.";
+		}
+	}
 }
 ?>
 
@@ -48,7 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<link rel="stylesheet" type="text/css" href="../../public/css/style.css">
 </head>
 <body>
-
 	<header>
 		<?php include __DIR__ . '/../includes/header.php'; ?>
 	</header>
@@ -56,12 +55,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<section>
 		<h1>Anmelden</h1>
 
-        <?php if (!empty($fehler)) {
-            echo $fehler;
-        }
-        ?>
+		<?php if (!empty($fehler)) {
+			echo $fehler;
+		}
+		?>
 
-        <form method="post" action="">
+		<form method="post" action="">
 			<div>
 				<label for="benutzername">Benutzername:</label>
 				<input type="text" name="benutzername" id="benutzername">
@@ -79,8 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</section>
 
 	<footer>
-		<p>Gruppenarbeit WEB42</p>
+		<?php include  __DIR__ . '/../src/includes/footer.php'; ?>
 	</footer>
-
 </body>
 </html>
