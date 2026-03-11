@@ -1,0 +1,8 @@
+Login mit Benutzername und Passwort
+Medien müssen hochgeladen werden 
+Beim Upload muss direkt das Format erkannt werden
+Tags müssen zugeordnet werden  
+Tags müssen verändert werden können (pro eigenem Medium) 
+Medien müssen gelöscht werden 
+Admin muss Rechte für alle Medien haben
+Nutzer hat nur Rechte für eigene Medien
