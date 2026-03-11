@@ -1,3 +1,9 @@
+/* Reset von Standard-Margin und -Padding ===================================*/
+*{
+	margin: 0;
+	padding: 0;
+}
+
 /* Globale Variablen ========================================================*/
 :root {
 	--primary_1: #D4CFC5;
@@ -14,15 +20,7 @@
 	--font_color: black;
 }
 
-/*setzt alle margin und padding auf 0 für bessere Kontrolle über Layout======*/
-*{
-  margin: 0;
-  padding: 0;
-}
-
-
-/* CSS-Styling für die Schriftarten =========================================*/
-
+/* Styling der Schriftarten =================================================*/
 html {
 	font-family: var(--font);
 }
@@ -62,80 +60,23 @@ p {
 	line-height: 1.5;
 }
 
-/* CSS-Styling für den Hauptbereich =========================================*/
+/* Styling des Seitenlayouts ================================================*/
 body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 	background-color: var(--primary_1);
 }
 
-
-/* CSS-Styling für den Hauptbereich von gallery.php =========================*/
-.media_details {
-	display: flex;
-	flex-direction: row;
-}
-
-.media {
-	max-width: 40%;
-	border: solid;
-}
-
-.media_details table {
-	display: block;
-	margin-left: 20px;
-	width: 40%;
-}
-
-.media_options {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-end;
-	align-items: flex-start;
-	width: 20%;
-}
-
-.options {
-	width: 50px;
-}
-
-.options:hover {
-	background-color: var(--neutral_2);
-}
-
-/* CSS-Styling für den Hauptbereich von media_list.php ======================*/
-.media_list {
-	max-width: 30%;
-}
-
-.media_list li:hover {
-	background-color: var(--neutral_2);
-}
-
-.list_item {
-	display: flex;
-	align-items: center;
-}
-
-.media_list img {
-	max-width: 10%;
-}
-
-.media_list a {
-	display: flex;
-	align-items: center; 
-	padding: 5px;
-	text-decoration: none;
-	color: black;
-}
-
-/* CSS-Styling für die Kopfzeile ============================================*/
+/* Styling der Kopfzeile ====================================================*/
 header {
-	background-color: var(--primary_2);
-	width: 100%;
-	height: 100px;
 	display: flex;
 	flex-direction: row;
+	position: sticky;
+	top: 0;
 	justify-content: space-between; 
 	align-items: center;
+	background-color: var(--primary_2);
 	border-bottom: 2px solid var(--neutral_2);
 }
 
@@ -231,7 +172,7 @@ img[class="header_user"] {
 	font-size: 16px;
 	border: 2px solid black;
 	border-radius: 10px;
-    padding: 5px 5px;
+	padding: 5px 5px;
 	cursor: pointer; 
 	transition: 0.3s;
 }
@@ -249,8 +190,8 @@ img[class="header_user"] {
 	font-size: 24px;
 	border: 2px solid black;
 	border-radius: 10px;
-    padding: 5px 20px;
-    margin: 0 20px;
+	padding: 5px 20px;
+	margin: 0 20px;
 	cursor: pointer; 
 	transition: 0.3s;
 }
@@ -265,3 +206,93 @@ img[class="header_user"] {
 	margin-left: 128px;
 	top: 28px;
 }
+
+/* Styling des Seiteninhalts ================================================*/
+section {
+	flex: 1;
+}
+
+/* Styling der Fusszeile ====================================================*/
+footer {
+	background-color: var(--primary_2);
+}
+
+/* Styling von dashboard.php ================================================*/
+
+/* Styling von gallery.php ==================================================*/
+.media_details {
+	display: flex;
+	flex-direction: row;
+}
+
+.media {
+	max-width: 40%;
+	border: solid;
+}
+
+.media_details table {
+	display: block;
+	margin-left: 20px;
+	width: 40%;
+}
+
+.media_options {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: flex-start;
+	width: 20%;
+}
+
+.options {
+	width: 50px;
+}
+
+.options:hover {
+	background-color: var(--neutral_2);
+}
+
+/* Styling von login.php ====================================================*/
+
+/* Styling von logout.php ===================================================*/
+
+/* Styling von media_delete.php =============================================*/
+
+/* Styling von media_edit.php ===============================================*/
+
+/* Styling von media_list.php ===============================================*/
+.media_list {
+	max-width: 30%;
+}
+
+.media_list li:hover {
+	background-color: var(--neutral_2);
+}
+
+.media_list a {
+	display: flex;
+	flex-direction: row;
+	align-items: center; 
+	padding: 5px;
+	text-decoration: none;
+	color: black;
+}
+
+.media_list img {
+	max-width: 10%;
+	margin-right: auto;
+}
+
+/* Styling von media_search.php =============================================*/
+
+/* Styling von media_upload.php =============================================*/
+
+/* Styling von signup.php ===================================================*/
+
+/* Styling von tags.php =====================================================*/
+
+/* Styling von user_create.php ==============================================*/
+
+/* Styling von user_edit.php ================================================*/
+
+/* Styling von user_list.php ================================================*/
