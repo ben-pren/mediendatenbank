@@ -214,7 +214,17 @@ section {
 
 /* Styling der Fusszeile ====================================================*/
 footer {
+	display: flex;
+	margin-top: auto;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;	
+	border-top: 2px solid var(--neutral_2);
 	background-color: var(--primary_2);
+}
+
+footer div{
+	margin-top: 10px;
 }
 
 /* Styling von dashboard.php ================================================*/
