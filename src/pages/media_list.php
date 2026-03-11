@@ -1,3 +1,8 @@
+<?php 
+require_once '../includes/auth.php';
+require_once __DIR__ . "/../config/db.php";
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -13,7 +18,6 @@
 	
 	<section>
 		<?php
-		require_once __DIR__ . "/../config/db.php";
 
 		// Abfrage der Medien in der DB
 		$sql = "SELECT Titel FROM Medium";
@@ -42,3 +46,4 @@
 	</footer>
 </body>
 </html>
+<?php $connection->close();?>
