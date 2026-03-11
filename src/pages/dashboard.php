@@ -21,7 +21,7 @@ require_once __DIR__ . "/../includes/auth.php";
     </section>
 
     <footer>
-        <?php include  __DIR__ . '/../src/includes/footer.php'; ?>
+        <?php include  __DIR__ . '/../includes/footer.php'; ?>
     </footer>
 </body>
 </html>
