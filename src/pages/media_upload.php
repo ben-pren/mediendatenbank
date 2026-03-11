@@ -22,19 +22,35 @@ function typeToMedia($datatype) {
         $medientyp = "Hoerbuch";
     }
     elseif($datatype === "html" || $datatype ==="pdf"){
-     $medientyp = "eBook";
- }
- return $medientyp;
+       $medientyp = "eBook";
+    }
+    return $medientyp;
 }
 
+function mediaToImg($medientyp) {
+    $icon_path = "";
+    if($medientyp === "Bild"){
+        $icon_path = "../../public/icons/bild.svg";
+    }
+    if($medientyp === "Video"){
+        $icon_path = "../../public/icons/video.svg";
+    }
+    if($medientyp === "Hoerbuch"){
+        $icon_path = "../../public/icons/hoerbuch.svg";
+    }
+    if($medientyp === "eBook"){
+        $icon_path = "../../public/icons/ebook.svg";
+    }
+    return $icon_path;
+}
 // Abbrechen von Upload und löschen von Sessiondaten sowie temporären Uploads
 if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
-    foreach ($_SESSION['temp_uploads'] as $datei) {
-        $media_path = substr($datei['temp_path'], 2);
-        $delte_path = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src" . $media_path;
-        unlink($delte_path);
-    }
-    unset($_SESSION['temp_uploads']);
+            foreach ($_SESSION['temp_uploads'] as $datei) {
+                $media_path = substr($datei['temp_path'], 2);
+                $delte_path = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src" . $media_path;
+                unlink($delte_path);
+            }
+            unset($_SESSION['temp_uploads']);
 }
 
 
@@ -58,7 +74,7 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
             $userid = $_SESSION['NutzerID'];
             
             $stmt = $connection->prepare("INSERT INTO medium (Titel, Medienart, Datentyp, Groesse, Path, NutzerID)
-              VALUES (?, ?, ?, ?, ?, ?)");
+                                          VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->bind_Param("sssssi", $titel_final, $medienart, $datentyp, $groesse, $final_path, $userid);
             
             if($stmt->execute()) {
@@ -76,43 +92,43 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
 
 //Temporäres Speichern der Datein um vor Abbruch zu schützen und Titel zu vergeben
 if(isset($_FILES['userfiles']) && !isset($_SESSION['temp_uploads'])){ 
- $files = $_FILES['userfiles'];
- $filecount = count($files['name']);
- 
- $_SESSION['temp_uploads'] = [];
- 
- $upload_zielTEMP = "../UserUploadsTEMP/";
- 
- if (!file_exists($upload_zielTEMP)) {
-     mkdir($upload_zielTEMP, 0777, true);
- }
- 
- for ($i = 0; $i < $filecount; $i++){
-     if ($files['error'][$i] === UPLOAD_ERR_OK) {
-         
-         $erlaubte_typ = ['png', 'jpg', 'jpeg', 'mp3', 'mp4', 'html', 'pdf'];
-         $extension = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
-         
-         if (!in_array($extension, $erlaubte_typ)) {
-             echo("Eine Datei ist vom typ " . $extension . ".<br>");
-             die("Nur PNG, JPG, JPEG, MP3, MP4, HTMl und PDF Datein sind erlaubt.");
+   $files = $_FILES['userfiles'];
+   $filecount = count($files['name']);
+   
+   $_SESSION['temp_uploads'] = [];
+   
+   $upload_zielTEMP = "../UserUploadsTEMP/";
+   
+   if (!file_exists($upload_zielTEMP)) {
+       mkdir($upload_zielTEMP, 0777, true);
+   }
+      
+   for ($i = 0; $i < $filecount; $i++){
+       if ($files['error'][$i] === UPLOAD_ERR_OK) {
+           
+           $erlaubte_typ = ['png', 'jpg', 'jpeg', 'mp3', 'mp4', 'html', 'pdf'];
+           $extension = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+           
+           if (!in_array($extension, $erlaubte_typ)) {
+               echo("Eine Datei ist vom typ " . $extension . ".<br>");
+               die("Nur PNG, JPG, JPEG, MP3, MP4, HTMl und PDF Datein sind erlaubt.");
+           }
+           
+           $temp_path = $upload_zielTEMP . uniqid() . "_" . $files["name"][$i];
+           if (move_uploaded_file($files["tmp_name"][$i], $temp_path)) {
+               $_SESSION['temp_uploads'][] = [
+                   "temp_path" => $temp_path,
+                   "temp_titel" => pathinfo($files['name'][$i], PATHINFO_FILENAME),
+                   "Medienart" => typeToMedia($extension),
+                   "Datentyp"  => $extension,
+                   "Groesse"   => formatBytes($files["size"][$i]),
+                   "voll_name" => $files['name'][$i]   
+               ];   
+           }
+       } else {
+           echo "<p>Uploadfehler bei Datei " . ($i+1) . "</p>";
          }
-         
-         $temp_path = $upload_zielTEMP . uniqid() . "_" . $files["name"][$i];
-         if (move_uploaded_file($files["tmp_name"][$i], $temp_path)) {
-             $_SESSION['temp_uploads'][] = [
-                 "temp_path" => $temp_path,
-                 "temp_titel" => pathinfo($files['name'][$i], PATHINFO_FILENAME),
-                 "Medienart" => typeToMedia($extension),
-                 "Datentyp"  => $extension,
-                 "Groesse"   => formatBytes($files["size"][$i]),
-                 "voll_name" => $files['name'][$i]   
-             ];   
-         }
-     } else {
-         echo "<p>Uploadfehler bei Datei " . ($i+1) . "</p>";
-     }
- }
+   }
 }
 
 $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads']);
@@ -122,68 +138,121 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
 <html lang="de">
 
 <head>
-  <title>Media Upload</title>
+  <title>Medien Upload</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+  <link rel="stylesheet" type="text/css" href="../../public/css/upload.css">
 </head>
 
 <body>
   <header>
     <?php include '../includes/header.php'; ?>
-</header>
-
-<main>
+  </header>
+  
+  <main>
     <?php if(!$anzeige) {?>
-      <h2>Datein Upload</h2>
-      <p></p>
-      <form action="media_upload.php" method="post" enctype="multipart/form-data">
-        <label for="files">Medienupload</label>
+      <div class="container_beschreibung">
+        <h2>Medien Upload</h2>
+        <p>
+           Hier kannst du Medien auf unsere Website hochladen. Klicke dafür einfach auf den Button 'Dateien auswählen' 
+           und wähle mit 'Strg' + 'Linksklick' aus, welche Dateien du hochladen willst. <br>
+           Nach der Auswahl der Dateien kannst du durch das Klicken auf 'Upload vorbereiten'
+           jedem deiner Uploads einen Titel und passende Tags hinzufügen. <br>
+           Hochladen kannst du hier Bilder, Videos, Hörbücher und eBooks. Folgende Dateiformate sind hier für den Upload zugelassen.
+        </p> 
+      </div>
+      
+      <div class="container_dateiformate">      
+        <div>
+          <img src="../../public/icons/bild.svg" class="medienimg">
+          <p class="font_white">Bilder: <br> png/jpg/jpeg </p>
+        </div>
+        
+        <div>
+          <img src="../../public/icons/video.svg" class="medienimg">
+          <p class="font_white">Videos: <br> mp4</p>
+        </div>
+        
+        <div>
+          <img src="../../public/icons/hoerbuch.svg" class="medienimg">
+          <p class="font_white">Horbücher: <br> mp3</p>
+        </div>
+        
+        <div>
+          <img src="../../public/icons/ebook.svg" class="medienimg">
+          <p class="font_white">eBooks: <br> html/pdf </p>
+        </div>        
+      </div>
+      
+      <div class="container_beschreibung">
+        <p>
+          Falls manche deiner Dateien nicht in den erlaubten Formaten vorliegen, kannst du diese auch online in die gewünschten Formate umwandeln.<br>
+          Zum Beispiel gibt es viele Websites, auf denen du kostenlos EPUB-Dateien (Standardformat für eBooks) in HTML- oder PDF-Dateien
+          umwandeln lassen kannst.
+        </p>
+      </div>
+      
+      
+      <form action="media_upload.php" method="post" enctype="multipart/form-data" class="form_upload">
+        <label for="userfiles"> Dateien auswählen</label>
         <input 
-        type="file" 
-        id="userfiles" 
-        name="userfiles[]" 
-        multiple 
-        accept=".png, .jpg, .jpeg , .mp3, .mp4, .html"
-        required
+          type="file" 
+          id="userfiles" 
+          name="userfiles[]"
+          multiple 
+          accept=".png, .jpg, .jpeg , .mp3, .mp4, .html"
+          required
         >
         <button type="submit">Upload vorbereiten</button>
-    </form>
-<?php }?>
-
-<?php if($anzeige) {?>
-  <h2>Anpassung von Titel und Tags</h2>
-  
-  <form action="media_upload.php" method="post">
-    <?php foreach($_SESSION['temp_uploads'] as $datei_index => $datei) {?>
-      <h3>Datei <?php echo $datei_index + 1?>: <?php echo $datei['voll_name']?></h3>
-      <p>
-          Originaler Titel: <?php echo $datei['temp_titel']?> <br>
-          Medienart       : <?php echo $datei['Medienart']?> <br>
-          Datentyp        : <?php echo $datei['Datentyp']?> <br>
-          Größe           : <?php echo $datei['Groesse']?> <br>
-      </p>      
+      </form>
+    <?php }?>
+        
+    <?php if($anzeige) {?>
+      <h2>Anpassung von Titel und Tags</h2>
       
-      <label for=titel_<?php echo$datei_index?>>Neuer Titel:</label>
-      <input
-      type="text"
-      id="titel_<?php echo$datei_index?>"
-      name="titel_<?php echo$datei_index?>"
-      value="<?php echo$datei['temp_titel']?>" 
-      required
-      >  <br>
-  <?php }?>
-  <button type="submit" name="hochladen">Dateien hochladen</button>
-  <button type="submit" name="abbrechen">Upload abbrechen</button>
-</form>
-<?php }?>
+      <form action="media_upload.php" method="post" class="form_edit">
+      <div class="container_medien">
+        <?php foreach($_SESSION['temp_uploads'] as $datei_index => $datei) {?>
+        <div>
+          <img src=<?php echo mediaToImg($datei['Medienart']);?> class="media_icon">
+          <h3>Datei <?php echo $datei_index + 1?></h3>
 
-</main>
-
-<footer>
-    <?php include  __DIR__ . '/../includes/footer.php'; ?>
-</footer>
+          
+            
+              <p>Originaler Titel<br> <?php echo $datei['temp_titel']?></p> <br>
+              <div class="container_mediendetails">
+                <div>Medienart       <br> <?php echo $datei['Medienart']?></div> <br>
+                <div>Datentyp        <br> <?php echo $datei['Datentyp']?></div> <br>
+                <div>Größe           <br> <?php echo $datei['Groesse']?></div> <br>
+              </div>
+          
+          <label for=titel_<?php echo$datei_index?>>Neuer Titel:</label>
+            <input
+              type="text"
+              id="titel_<?php echo$datei_index?>"
+              name="titel_<?php echo$datei_index?>"
+              value="<?php echo$datei['temp_titel']?>" 
+              maxlength="100"
+              required
+          >  <br>
+        </div>     
+        <?php }?> 
+      </div> 
+      <div class="container_buttons">
+        <button type="submit" name="hochladen">Dateien hochladen</button>
+        <button type="submit" name="abbrechen">Upload abbrechen</button>
+      </div>  
+      </form>
+    <?php }?>
+  </main>
+  
+  <footer>
+    <?php include '../includes/footer.php'; ?>
+  </footer>
+  
 </body>
 </html>
 
+<?php $connection->close();?>
 
