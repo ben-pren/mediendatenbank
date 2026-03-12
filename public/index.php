@@ -35,10 +35,12 @@
 
 		<div class="foto-container">
         	<img src="icons/bild1_landingpage.jpg" class="foto-stil" alt="Vorschau 1: Buch">
-        	<img src="icons/bild2_landingpage.jpg" class="foto-stil" alt="Vorschau 2: New York">
+        	<!--  <img src="icons/bild2_landingpage.jpg" class="foto-stil" alt="Vorschau 2: New York"> -->
+			<video src="icons/video1_landingpage.mov" class="foto-stil" alt="Vorschau 2: London" autoplay loop></video>
         	<img src="icons/bild3_landingpage.jpg" class="foto-stil" alt="Vorschau 3: Dackel">
 		</div>
-		
+		<p>Wir unterstützen: Fotos, Videos, Hörbücher & eBooks!</p>
+
 		<!-- <p class="small">P(klein)</p>-->
 	</section>
 
