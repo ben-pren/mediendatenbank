@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	/*Felder auf Inhalt prüfen*/     
 	if (empty($login) || empty($passwort)) {
-		$fehler = "Bitte einen gültigen Benutzer und Passwort eingeben.";
+		$fehler = "Bitte gültigen Benutzernamen/E-Mail und Passwort eingeben.";
 	} else {
 		/*Datenbankabgleich auf Email oder Nutzer und Weiterleitung auf Dashboard*/
 		$sql = "SELECT * FROM nutzer WHERE Benutzername = '$login' OR Email = '$login'";
@@ -51,15 +51,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<header>
 		<?php include __DIR__ . '/../includes/header.php'; ?>
 	</header>
-
+		<?php include __DIR__ . '/../includes/background.php'; ?>
 	<section class="login_container">
 		<div class="login_box">
 			<h1>Anmelden</h1>
-
-		<?php if (!empty($fehler)) {
-			echo $fehler;
-		}
-		?>
 
 		<form method="post" action="">
 			<div>
@@ -75,7 +70,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<div>
 				<button type="submit">Login</button>
 			</div>
+			
+			<div class="login_error">
+			  <?php if (!empty($fehler)) {
+			      printf($fehler);
+		            }
+		      ?>
+			</div>
 		</form>
+		</div>
 	</section>
 
 	<footer>

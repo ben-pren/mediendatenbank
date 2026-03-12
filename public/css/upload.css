@@ -164,3 +164,7 @@ input[type="text"]:focus {
 	align-self: flex-start;
 	float: left;
 }
+
+.upload_succes {
+	text-align: center;
+}

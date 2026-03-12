@@ -10,7 +10,7 @@
 	<header>
 		<?php include  __DIR__ . '/../../src/includes/header.php'; ?>
 	</header>
-
+		<?php include __DIR__ . '/../includes/background.php'; ?>
 	<section>
 		<div class="media_details">
 		
