@@ -55,8 +55,9 @@ if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
 
 
 // permanentes speichern in DB
-$upload_ziel = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src" . "/UserUploads/";
-
+$upload_ziel = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src/UserUploads/";
+$id = "";
+$upload_erfolg = "";
 if (!file_exists($upload_ziel)) {
     mkdir($upload_ziel, 0777, true);
 }
@@ -64,7 +65,9 @@ if (!file_exists($upload_ziel)) {
 if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
     
     foreach ($_SESSION['temp_uploads'] as $datei_index => $datei) {
-        $final_path = $upload_ziel . uniqid() . "_" . $datei["voll_name"];
+        $id = uniqid();
+        $final_path = $upload_ziel . $id . "_" . $datei["voll_name"];
+        $final_pathdb = "http://localhost/MedienDB/src/UserUploads/" . $id . "_" . $datei["voll_name"];
         
         if (rename($datei['temp_path'], $final_path)) {
             $titel_final = $_POST["titel_" . $datei_index];
@@ -75,10 +78,10 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
             
             $stmt = $connection->prepare("INSERT INTO medium (Titel, Medienart, Datentyp, Groesse, Path, NutzerID)
                                           VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_Param("sssssi", $titel_final, $medienart, $datentyp, $groesse, $final_path, $userid);
+            $stmt->bind_Param("sssssi", $titel_final, $medienart, $datentyp, $groesse, $final_pathdb, $userid);
             
             if($stmt->execute()) {
-                echo "Datei " . $datei_index + 1 . "<br>";
+                $upload_erfolg = "Hochladen Erfolgreich";
             }
             $stmt->close();
         }
@@ -149,7 +152,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
   <header>
     <?php include '../includes/header.php'; ?>
   </header>
-  
+  	<?php include __DIR__ . '/../includes/background.php'; ?>
   <main>
     <?php if(!$anzeige) {?>
       <div class="container_beschreibung">
@@ -206,6 +209,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
         >
         <button type="submit">Upload vorbereiten</button>
       </form>
+      <p class= "upload_succes"><?php printf($upload_erfolg); ?></p>
     <?php }?>
         
     <?php if($anzeige) {?>
