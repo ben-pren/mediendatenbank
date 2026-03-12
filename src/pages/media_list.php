@@ -15,14 +15,17 @@ require_once __DIR__ . "/../config/db.php";
 	<header>
 		<?php include  __DIR__ . '/../includes/header.php'; ?>
 	</header>
-	
+		<?php include __DIR__ . '/../includes/background.php'; ?>
 	<section>
 		<form action="media_list.php" method="post">
 			<input name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>">
 		</form>
 
 		<?php
+		// verhindert 'undefined' Fehler bei erstaufruf der Seite
+		if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 		// Abfrage der Medien in der DB
+
 		$search_terms = array_map('trim', explode(',', $_POST['searchbar']));
 
 		$where_parts = [];
@@ -55,11 +58,11 @@ require_once __DIR__ . "/../config/db.php";
 		while ($entry = $result->fetch_assoc()) {
 			printf("<li>
 				<a href='#'>
-				<img class='media_preview' src='%s%s.%s' alt='Error'>
+				<img class='media_preview' src='%s' alt='Error'>
 				<p>%s</p>
 				</a>			
 				</li>"
-				, $entry["Path"], $entry["Titel"], $entry["Datentyp"], $entry["Titel"]);
+				, $entry["Path"], $entry["Titel"]);
 		}
 
 		printf("</ul>");
