@@ -264,6 +264,67 @@ footer div{
 
 /* Styling von login.php ====================================================*/
 
+.login_container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 80vh;
+}
+
+.login_box {
+	background-color: var(--primary_2);
+	border: 2px solid black;
+	border-radius: 15px;
+	padding: 30px;
+	width: 100%;
+	max-width: 400px;	
+}
+
+.login_box h1 {
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+.login_box form div {
+	margin-bottom: 15px;
+}
+
+.login_box label {
+	display: block;
+	margin-bottom: 5px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.login_box input {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border: 2px solid black;
+	border-radius: 10px;
+}
+
+.login_box button {
+	background-color: var(--primary_1);
+	color: black;
+	text-decoration: none;
+	font-size: 24px;
+	border: 2px solid black;
+	border-radius: 10px;
+	padding: 5px 20px;
+	display: block;
+	margin: 0 auto;
+	cursor: pointer; 
+	transition: 0.3s;
+}
+
+.login_box button:hover {
+	background-color: black;
+	color: var(--primary_1);
+	border-color: var(--primary_1);
+}
+
 /* Styling von logout.php ===================================================*/
 
 /* Styling von media_delete.php =============================================*/
