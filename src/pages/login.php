@@ -5,6 +5,12 @@ session_start();
 /* Für die Fehlermeldung */
 $fehler = "";
 
+$erfolg = "";
+if (isset($_SESSION["erfolg"])) {
+	$erfolg = $_SESSION["erfolg"];
+	unset($_SESSION["erfolg"]);
+}
+
 /* Prüfen, ob Login Formular per POST abgeschickt wurde */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$login = trim($_POST["nutzer"]);
@@ -55,6 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<section class="login_container">
 		<div class="login_box">
 			<h1>Anmelden</h1>
+		
+		<?php 
+		if (!empty($erfolg)) {
+			echo "<p>$erfolg</p>";
+		}
+		?>
 
 		<form method="post" action="">
 			<div>

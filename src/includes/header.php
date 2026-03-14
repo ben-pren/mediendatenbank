@@ -51,7 +51,7 @@ $showlogin = isset($_SESSION['NutzerID']);
 <?php if(!$showlogin) {?>
 	<div class="header_container signup_buttons" >
 		<a href="/MedienDB/src/pages/login.php" class="login_button">Anmelden</a>
-		<a href="#" class="login_button">Registrieren</a>		
+		<a href="/MedienDB/src/pages/signup.php" class="login_button">Registrieren</a>		
 	</div>
 <?php }?>
 
