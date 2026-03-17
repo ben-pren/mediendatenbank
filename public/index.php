@@ -10,8 +10,8 @@
 	<style>
         section {
         	text-align: center;
-    		padding-top: 90px;
-        	padding-bottom: 90px;
+    		padding-top: 100px;
+        	padding-bottom: 100px;
    	 	}
     	.foto-stil {
         	width: 180px;
