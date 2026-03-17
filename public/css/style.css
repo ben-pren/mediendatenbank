@@ -227,6 +227,24 @@ footer div{
 	margin-top: 10px;
 }
 
+footer div a{
+	text-decoration: none;
+	color: var(--accent_1);
+}
+
+footer div a:visited{
+	color: var(--accent_1);
+}
+
+footer div a:hover{
+	color: var(--accent_3);
+}
+
+footer div a:active{
+	color: var(--accent_4);
+}
+
+
 /* Styling von dashboard.php ================================================*/
 .search_container {
 	display: flex;
