@@ -22,7 +22,7 @@ require_once __DIR__ . "/../config/db.php";
       <h1>Dashboard</h1>
       <p>Willkommen, <?php echo $_SESSION["Benutzername"]; ?>!</p>
         <div class="search_container">
-            <form class="search_form" action="media_list.php" method="post">
+            <form class="search_form" action="dashboard.php" method="post">
                 <input class="search_bar" type="text" name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>" placeholder="Suchberiffe..">
                 
                 <div class="search_options">
