@@ -4,35 +4,19 @@ use function pcov\waiting;
 require_once '../includes/auth.php';
 require_once __DIR__ . "/../config/db.php";
 
-// anzeigen von form zur änderug von tag wenn auf Zahnrad geklickt wird
-if (isset($_POST['aendern'])) {
-    $tag_id = $_POST['aendern']; ?>
-    <div>
-      <?php $sql = "SELECT * FROM tag WHERE TagID = $tag_id";
-            $result = mysqli_query($connection,$sql);
-            $result = mysqli_fetch_assoc($result);
-      if($result){?>
-      <div><?php echo "Tag Name: " . $result['TagName'];?> <br></div>
-      <form action="" method="post">
-      	<label for="new_tag">Neuer Name:</label>
-        <input type="text" id="altered_tag" name="altered_tag" maxlength="50">
-      	<button type="submit" name="neu_tag" value="<?php echo $tag_id;?>">Tag ändern</button>
-      	<button type="submit" name="neu_tag_abbruch">abbrechen</button>
-      </form>
-      </div>
-<?php 
-      }
-}?>
-
-
-<?php
 // abbruch ändern von Tag
 if(isset($_POST['neu_tag_abbruch'])) {
    header("Location: " . "/MedienDB/src/pages/tags.php");
    exit;
 }
 
-
+// Fehlermeldung wenn kein neuer Name eingeben 
+if(isset($_POST['neu_tag']) && empty($_POST['altered_tag'])) {
+    $_SESSION['aendern_erfolg'] = "Bitte neuen Namen eingeben";
+}
+    
+    
+// Ändern von Tag
 if(isset($_POST['neu_tag']) && !empty($_POST['altered_tag'])) {
    $neu_tag_name = $_POST['altered_tag'];
    $tag_titel_compare = strtolower(preg_replace('/\s+/', '', $neu_tag_name));
@@ -52,7 +36,7 @@ if(isset($_POST['neu_tag']) && !empty($_POST['altered_tag'])) {
            }
        }
    }
-   
+   // hier wird Tag geändert falls der neue Name nicht vergeben ist
    if(!$doppeltag) {
    $stmt = $connection->prepare("UPDATE tag SET TagName= ? WHERE TagID = ?");
    $stmt->bind_Param("si", $neu_tag_name, $tag_id);
@@ -143,9 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['tags'])) {
   </header>
 	<?php include __DIR__ . '/../includes/background.php'; ?>
   <main>
-  <div>
+  <div class="container_add">
+    <h2>Tag hinzufügen</h2>
     <form action="" method="post">
-      <label for=tags>Tag hinzufügen:</label>
       <input type="text" id="tags" name="tags" maxlength="50" required>
       <button type="submit" name="hochladen">Tag hochladen</button>
     </form>
@@ -168,20 +152,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['tags'])) {
       ?>
     </p>
   </div>
+<?php
+// anzeigen von form zur änderug von tag wenn auf Stift geklickt wird
+if (isset($_POST['aendern'])) {
+    $tag_id = $_POST['aendern']; ?>
+    <div class="container_tag_change">
+      <?php $sql = "SELECT * FROM tag WHERE TagID = $tag_id";
+            $result = mysqli_query($connection,$sql);
+            $result = mysqli_fetch_assoc($result);
+      if($result){?>
+      <h3><?php echo "Tag Name: " . $result['TagName'];?></h3>
+      <form action="" method="post">
+        <input type="text" id="altered_tag" name="altered_tag" maxlength="50" placeholder="Neuer Name" >
+      	<button type="submit" name="neu_tag" value="<?php echo $tag_id;?>">Tag ändern</button>
+      	<button type="submit" name="neu_tag_abbruch">Abbruch</button>
+      </form>
+      </div>
+<?php 
+      }
+}?> 
+  
 <!-- Alphabetische Ausgabe von Tags mit Buttons zum ändern/löschen -->  
-  <div>
+  <div class="container_taglist">
     <?php 
-      $sql = "SELECT * FROM tag ORDER BY TagName ASC";
+      $sql = "SELECT * FROM tag ORDER BY LOWER(TagName) ASC";
       $result = mysqli_query($connection,$sql);
       if($result) {
           while ($row = mysqli_fetch_assoc($result)) {  ?>
-             <div>
-               <?php echo  $row['TagName'];?>
-               <form action="" method="post">
-                 <button type="submit" name="aendern" value="<?php echo $row['TagID']?>"><img src = "/MedienDB/public/icons/einstellungen.svg"></button>
-	             <button type="submit" name="loeschen" value="<?php echo $row['TagID']?>"><img src = "/MedienDB/public/icons/schliessen.svg"></button>
-	           </form>
-             </div>
+          	   <div class="container_tag">
+                 <div><?php echo  $row['TagName'];?></div>
+                 <form action="" method="post" class="container_buttons">
+                   <button type="submit" name="aendern" value="<?php echo $row['TagID']?>"><img src = "/MedienDB/public/icons/pen.svg"></button>
+	               <button type="submit" name="loeschen" value="<?php echo $row['TagID']?>"><img src = "/MedienDB/public/icons/trash-can.svg"></button>
+	             </form>
+	           </div>
      <?php
           }?>
  <?php
