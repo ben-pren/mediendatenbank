@@ -274,6 +274,8 @@ footer div{
 
 .media_container img {
 	max-width: 50%;
+	max-height: 200px;
+	object-fit: cover;
 	padding: 10px;
 }
 
@@ -285,11 +287,29 @@ footer div{
 .media_details {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
+    gap: 40px;
+    max-width: 900px;       
+    margin: 40px auto;     
+    padding: 30px;
+    background-color: var(--primary_2);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+	position: relative;
+}
+
+.gallery_section {
+	display:flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .media {
-	max-width: 40%;
-	border: solid;
+	height: 450px;
+    width: 480px;        
+    object-fit: cover;   
+    border-radius: 10px;
+    border: solid;
 }
 
 .media_details table {
@@ -301,17 +321,88 @@ footer div{
 .media_options {
 	display: flex;
 	flex-direction: row;
-	justify-content: flex-end;
-	align-items: flex-start;
-	width: 20%;
+	gap: 10px;
+	margin-top: auto; 
+    padding-top: 20px;
 }
 
 .options {
 	width: 50px;
 }
 
+.options_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
 .options:hover {
-	background-color: var(--neutral_2);
+	opacity: 0.7;
+}
+
+.media_info {
+    flex: 1;               
+    margin-left: 30px;
+	min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.media_info_row {
+    display: flex;
+	align-items: center;
+    gap: 15px;
+}
+
+.media_info_row span:not(.media_label) {
+    flex: 1;
+	overflow-wrap: break-word;
+	min-width: 0;
+}
+
+.media_label {
+    font-weight: bold;
+    min-width: 90px;      
+}
+
+.edit_inline_button {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.edit_inline_button:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.edit_inline_button img {
+    width: 1.5em;
+    height: 1.5em;
+	vertical-align:middle;
+}
+
+.close_button {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	text-decoration: none;
+}
+
+.close_button img {
+	width: 1.5em;
+	height: 1.5em;
+}
+
+
+.media_delete_button_unten {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
 }
 
 /* Styling von login.php ====================================================*/

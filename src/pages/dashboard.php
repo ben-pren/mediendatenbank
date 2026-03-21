@@ -22,7 +22,7 @@ require_once __DIR__ . "/../config/db.php";
       <h1>Dashboard</h1>
       <p>Willkommen, <?php echo $_SESSION["Benutzername"]; ?>!</p>
         <div class="search_container">
-            <form class="search_form" action="media_list.php" method="post">
+            <form class="search_form" action="dashboard.php" method="post">
                 <input class="search_bar" type="text" name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>" placeholder="Suchberiffe..">
                 
                 <div class="search_options">
@@ -93,7 +93,7 @@ require_once __DIR__ . "/../config/db.php";
             }
 
             $sql = "
-            SELECT DISTINCT m.Titel, m.Datentyp, m.Path FROM Medium m
+            SELECT DISTINCT m.MediumID, m.Titel, m.Datentyp, m.Path FROM Medium m
             LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
             LEFT JOIN Tag t ON t.TagID = mht.TagID
             WHERE $where
@@ -111,14 +111,18 @@ require_once __DIR__ . "/../config/db.php";
             // Ausgabe der Individuellen Datensaetze
             while ($entry = $result->fetch_assoc()) {
                 printf("
-                    <div class='media_container'>
+                    <div class='media_container' onclick=\"window.location='gallery.php?id=%d'\">
                         <img class='media_preview' src='%s' alt='Error'>
                         <div class='media_description'>
                             <h4>%s</h4>
                             <p>%s</p>
                         </div>
                     </div>
-                    ", $entry["Path"], $entry["Titel"], $entry["Datentyp"]
+                    ",
+                    $entry["MediumID"],
+                    $entry["Path"],
+                    $entry["Titel"],
+                    $entry["Datentyp"]
                 );
             }
             ?>
