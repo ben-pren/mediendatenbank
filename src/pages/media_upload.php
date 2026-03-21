@@ -41,8 +41,24 @@ function mediaToImg($medientyp) {
     if($medientyp === "eBook"){
         $icon_path = "../../public/icons/ebook.svg";
     }
-    return $icon_path;
+    return $icon_path;    
 }
+// Gibt alle Tags in Db in array form aus
+function getTags($connection) {
+    $all_tags = [];
+    $sql = "SELECT * FROM tag ORDER BY LOWER(TagName) ASC";
+    $result = mysqli_query($connection,$sql);
+    if($result) {
+        while($row = mysqli_fetch_assoc($result)) {
+            $all_tags[] = $row;
+        }
+    }
+    return $all_tags;
+}
+$all_tags = getTags($connection);
+
+
+
 // Abbrechen von Upload und löschen von Sessiondaten sowie temporären Uploads
 if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
             foreach ($_SESSION['temp_uploads'] as $datei) {
@@ -81,14 +97,26 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
             $stmt->bind_Param("sssssi", $titel_final, $medienart, $datentyp, $groesse, $final_pathdb, $userid);
             
             if($stmt->execute()) {
+                $medium_id = mysqli_stmt_insert_id($stmt);   
+                $selected_tags = "tags_for_" . $datei_index;
+                
+                if(isset($_POST[$selected_tags])) {
+                   $stmt_tags = $connection->prepare("INSERT INTO Medium_has_Tag (MediumID, TagID) VALUES (?, ?)"); 
+                   
+                   foreach ($_POST[$selected_tags] as $tag_ID) {
+                       $stmt_tags->bind_Param("ii", $medium_id, $tag_ID);
+                       $stmt_tags->execute();
+                   }
+                   $stmt_tags->close();
+                }  
                 $upload_erfolg = "Hochladen Erfolgreich";
+            } else {
+                $upload_erfolg = "Fehler beim Hochladen";
             }
             $stmt->close();
         }
     }
-    unset($_SESSION['temp_uploads']);
-    
-    
+    unset($_SESSION['temp_uploads']);  
 }
 
 
@@ -125,7 +153,7 @@ if(isset($_FILES['userfiles']) && !isset($_SESSION['temp_uploads'])){
                    "Medienart" => typeToMedia($extension),
                    "Datentyp"  => $extension,
                    "Groesse"   => formatBytes($files["size"][$i]),
-                   "voll_name" => $files['name'][$i]   
+                   "voll_name" => $files['name'][$i],
                ];   
            }
        } else {
@@ -231,7 +259,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
                 <div>Größe           <br> <?php echo $datei['Groesse']?></div> <br>
               </div>
           
-          <label for=titel_<?php echo$datei_index?>>Neuer Titel:</label>
+          <label for=titel_<?php echo$datei_index?> class="titel_label">Neuer Titel:</label>
             <input
               type="text"
               id="titel_<?php echo$datei_index?>"
@@ -240,6 +268,23 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
               maxlength="100"
               required
           >  <br>
+          
+          
+          <h3>Tagauswahl</h3>
+          <div class="tags_container">
+            <?php foreach ($all_tags as $tag) {?>
+            <div class="tag">      
+              <input 
+                type="checkbox"
+                name="tags_for_<?php echo $datei_index?>[]"
+                id="<?php echo $tag['TagID']?>_<?php echo $datei_index?>"
+			    value="<?php echo $tag['TagID']?>"
+              >
+              <label for="<?php echo $tag['TagID']?>_<?php echo $datei_index?>" class="tag_label"><?php echo $tag['TagName']?></label>
+            </div>
+            <?php }?>
+          </div>
+          
         </div>     
         <?php }?> 
       </div> 
