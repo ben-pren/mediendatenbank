@@ -26,17 +26,7 @@ $showlogin = isset($_SESSION['NutzerID']);
 	</button>
 	<!-- Menüinhalt -->	
 	<ul class="dropdown_content" id="dropdown_elements">
-	  <li><a href="/MedienDB/public/index.php">Startseite</a></li>
-	  <li><a href="/MedienDB/src/pages/dashboard.php">Dashboard</a></li>
-	  <li>
-        <a href="#" onclick="toggle_submenu()">Meine Medien ></a>
-	      <ul class="dropdown_content" id="dropdown_subelements">
-            <li><a href="/MedienDB/src/pages/media_list.php">Alle</a></li>
-	    	<li><a href="#">Bilder</a></li>
-	     	<li><a href="#">Videos</a></li>
-            <li><a href="#">Hörbücher</a></li>
-	      </ul>
-      </li>
+	  <li><a href="/MedienDB/src/pages/dashboard.php">Galerie</a></li>
 	  <li><a href="/MedienDB/src/pages/media_upload.php">Neue Medien</a></li>
 	  <?php if(isset($_SESSION["Rolle"])){
 	          if($_SESSION["Rolle"] === "Admin" ) {
@@ -44,13 +34,13 @@ $showlogin = isset($_SESSION['NutzerID']);
 	          }
 	        }
 	   ?>
-	  <li><a href="#">Impressum</a></li>
+	  <li><a href="/MedienDB/src/pages/impressum.php">Impressum</a></li>
     </ul>
     
   </nav>
   
     <div class="header_container logo">
-      <img src="/MedienDB/public/icons/LogoMedienDB.svg" alt="Logo MedienHub" class="img_logo"> 
+      <a href="/MedienDB/src/pages/dashboard.php"><img src="/MedienDB/public/icons/LogoMedienDB.svg" alt="Logo MedienHub" class="img_logo"> </a>
       <h1>MedienHub</h1>
     </div>
     
@@ -81,8 +71,4 @@ $showlogin = isset($_SESSION['NutzerID']);
 		document.getElementById("dropdown_elements").classList.toggle("show");
 	}
 
-	// Burger-Submenue ausklappen
-	function toggle_submenu() {
-		document.getElementById("dropdown_subelements").classList.toggle("show");
-	}
 </script>
