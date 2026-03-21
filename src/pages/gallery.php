@@ -216,7 +216,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                             <form action="gallery.php?id=<?php echo $id; ?>" method="post"
                                 onsubmit="return confirm('Medium wirklich löschen?')">
                                 <button type="submit" name="loeschen" class="options_button">
-                                <img class="options" src="../../public/icons/Papierkorb.svg" alt="Löschen">
+                                <img class="options" src="../../public/icons/trash-can.svg" alt="Löschen">
                                 </button>
                             </form>
                         <?php endif; ?>
