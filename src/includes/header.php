@@ -60,7 +60,9 @@ $showlogin = isset($_SESSION['NutzerID']);
 </nav>
 
 <div class="header_container logo">
-    <img src="/MedienDB/public/icons/LogoMedienDB.svg" alt="Logo MedienHub" class="img_logo"> 
+    <a href="/MedienDB/public/index.php">
+        <img src="/MedienDB/public/icons/LogoMedienDB.svg" alt="Logo MedienHub" class="img_logo">
+    </a>
     <h1>MedienHub</h1>
 </div>
 

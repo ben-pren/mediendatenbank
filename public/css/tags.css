@@ -1,0 +1,143 @@
+
+
+.container_add {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 5px 0 10px 0;
+	border-bottom: 2px solid var(--neutral_2);
+	background: var(--primary_3);
+	font-size: 24px;
+}
+
+input[type="text"] {
+	font-size: 24px;
+	padding: 1.5px 3px;
+	border: 2px solid var(--neutral_2);
+	border-radius: 5px;
+	background: var(--primary_1);
+	align-self: center;
+}
+
+input[type="text"]:focus {
+  border-color: black;
+  outline: none;
+}
+
+.container_add button {
+	background-color: var(--primary_2);
+	color: black;
+	text-decoration: none;
+	font-size: 24px;
+	border: 2px solid black;
+	border-radius: 10px;
+    padding: 5px 20px;
+	cursor: pointer; 
+	transition: 0.3s;
+}
+
+.container_add button:hover {
+	background-color: black;
+	color: var(--primary_1);
+	border-color: var(--primary_1);
+}
+
+.container_add p{
+	font-size: 20px;
+	color: white;
+	margin: 5px 0;
+}
+
+h2 {
+	color: white;
+	text-decoration: underline;
+	margin: 5px;
+}
+
+.container_taglist {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.container_tag {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	border: 2px solid black;
+	border-radius: 10px;
+	margin: 20px 10px 0 10px;
+	background: var(--neutral_2);
+	padding: 0;
+}
+
+.container_tag div{
+	font-size: 20px;
+	margin: 0 3px 0 3px;
+	padding: 5px;
+}
+
+.container_buttons{
+	display: flex;
+	gap: 0;
+}
+
+.container_buttons button{
+	border: none;
+	background: transparent;
+	border-left: 2px solid var(--neutral_3);
+	transition: 0.3s;
+	padding: 3px 3px;
+	cursor: pointer; 
+}
+
+.container_buttons button[name="loeschen"] {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;	
+}
+
+.container_buttons button:hover{
+	background: var(--neutral_1);
+}
+
+.container_buttons img{
+	width: 40px;
+}
+
+.container_tag_change {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 5px 0 10px 0;
+	border-bottom: 2px solid var(--neutral_2);
+	background: var(--primary_3);
+	font-size: 24px;
+	color: white;
+}
+
+.container_tag_change button {
+	background-color: var(--primary_2);
+	color: black;
+	text-decoration: none;
+	font-size: 24px;
+	border: 2px solid black;
+	border-radius: 10px;
+    padding: 5px 20px;
+	cursor: pointer; 
+	transition: 0.3s;
+}
+
+.container_tag_change button:hover {
+	background-color: black;
+	color: var(--primary_1);
+	border-color: var(--primary_1);
+}
+
+h3 {
+	color: white;
+	margin: 3px 0;
+}
+
+

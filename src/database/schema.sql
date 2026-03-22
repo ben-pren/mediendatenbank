@@ -9,7 +9,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema MedienDB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `MedienDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
+CREATE SCHEMA IF NOT EXISTS `MedienDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
 USE `MedienDB` ;
 
 -- -----------------------------------------------------

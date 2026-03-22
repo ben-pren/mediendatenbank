@@ -114,7 +114,7 @@ label[for="userfiles"]:hover, main button:hover {
 	overflow: auto;
 }
 
-.container_medien div label {
+.titel_label {
 	margin: 15px 0;
 	font-size: 20px;
 	text-align: center;
@@ -164,3 +164,61 @@ input[type="text"]:focus {
 	align-self: flex-start;
 	float: left;
 }
+
+.upload_succes {
+	text-align: center;
+}
+
+.tags_container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	border: 2px solid var(--neutral_2);
+	border-radius: 10px;
+	background: var(--primary_1);
+	max-height: 200px;
+	overflow: auto;
+}
+
+.tag input {
+	position: absolute; 
+	opacity: 0;
+}
+
+.tag_label {
+	display: inline-block;
+	color: black;
+	font-size: 22px;
+	border: 2px solid black;
+	border-radius: 10px;
+    background: var(--neutral_2);
+    padding: 8px 20px;
+    margin: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.1s;
+    overflow: hidden;
+}
+
+.tag_label:hover {
+    transform: translateY(-2px);
+    background: var(--neutral_1);
+}
+
+.tag_label:active {
+    transform: translateY(1px);
+}
+
+.tag input:checked + .tag_label {
+    background: var(--neutral_3);
+    border-color: var(--neutral_1);
+    color: white;
+}
+
+.tag input:checked + .tag_label::after {
+    content: "✔";
+    margin: 1px;
+}
+

@@ -15,12 +15,40 @@ require_once __DIR__ . "/../config/db.php";
 	<header>
 		<?php include  __DIR__ . '/../includes/header.php'; ?>
 	</header>
-	
+		<?php include __DIR__ . '/../includes/background.php'; ?>
 	<section>
-		<?php
+		<form action="media_list.php" method="post">
+			<input name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>">
+		</form>
 
+		<?php
+		// verhindert 'undefined' Fehler bei erstaufruf der Seite
+		if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 		// Abfrage der Medien in der DB
-		$sql = "SELECT Titel FROM Medium";
+
+		$search_terms = array_map('trim', explode(',', $_POST['searchbar']));
+
+		$where_parts = [];
+
+		foreach ($search_terms as $t) {
+			$t = addslashes($t);
+			$where_parts[] = "(
+				t.TagName LIKE '%$t%' 
+				OR m.Titel LIKE '%$t%' 
+				OR m.Medienart LIKE '%$t%' 
+				OR m.Datentyp LIKE '%$t%')
+			";
+		}
+
+		$where = implode(" OR ", $where_parts);
+
+		$sql = "
+			SELECT DISTINCT m.Titel, m.Datentyp, m.Path FROM Medium m
+			LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
+			LEFT JOIN Tag t ON t.TagID = mht.TagID
+			WHERE $where
+		";
+		
 		$result = mysqli_query($connection,$sql);
 
 		printf("<p>%s Datensätze gefunden", $result->num_rows);
@@ -29,12 +57,12 @@ require_once __DIR__ . "/../config/db.php";
         // Ausgabe der Individuellen Datensaetze
 		while ($entry = $result->fetch_assoc()) {
 			printf("<li>
-						<a href='#'>
-							<img class='media_preview' src='../../public/icons/benutzer.svg' alt='Error'>
-							<p>%s</p>
-						</a>			
-					</li>"
-					, $entry["Titel"]);
+				<a href='#'>
+				<img class='media_preview' src='%s' alt='Error'>
+				<p>%s</p>
+				</a>			
+				</li>"
+				, $entry["Path"], $entry["Titel"]);
 		}
 
 		printf("</ul>");

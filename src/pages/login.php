@@ -5,18 +5,24 @@ session_start();
 /* Für die Fehlermeldung */
 $fehler = "";
 
+$erfolg = "";
+if (isset($_SESSION["erfolg"])) {
+	$erfolg = $_SESSION["erfolg"];
+	unset($_SESSION["erfolg"]);
+}
+
 /* Prüfen, ob Login Formular per POST abgeschickt wurde */
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-	$benutzername = trim($_POST["benutzername"]);
+	$login = trim($_POST["nutzer"]);
 	$passwort = trim($_POST["passwort"]);
 
 
 	/*Felder auf Inhalt prüfen*/     
-	if (empty($benutzername) || empty($passwort)) {
-		$fehler = "Bitte einen gültigen Benutzername und Passwort eingeben.";
+	if (empty($login) || empty($passwort)) {
+		$fehler = "Bitte gültigen Benutzernamen/E-Mail und Passwort eingeben.";
 	} else {
-		/*Datenbankabgleich und Weiterleitung auf Dashboard*/
-		$sql = "SELECT * FROM nutzer WHERE Benutzername = '$benutzername'";
+		/*Datenbankabgleich auf Email oder Nutzer und Weiterleitung auf Dashboard*/
+		$sql = "SELECT * FROM nutzer WHERE Benutzername = '$login' OR Email = '$login'";
 		$result = mysqli_query($connection,$sql);
 
 		if (mysqli_num_rows($result) > 0){
@@ -33,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$fehler = "Das eingegebene Passwort ist falsch.";
 			}
 		} else {
-			$fehler = "Benutzername nicht gefunden.";
+			$fehler = "Benutzername oder E-Mail nicht gefunden.";
 		}
 	}
 }
@@ -51,19 +57,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<header>
 		<?php include __DIR__ . '/../includes/header.php'; ?>
 	</header>
-
-	<section>
-		<h1>Anmelden</h1>
-
-		<?php if (!empty($fehler)) {
-			echo $fehler;
+		<?php include __DIR__ . '/../includes/background.php'; ?>
+	<section class="login_container">
+		<div class="login_box">
+			<h1>Anmelden</h1>
+		
+		<?php 
+		if (!empty($erfolg)) {
+			echo "<p>$erfolg</p>";
 		}
 		?>
 
 		<form method="post" action="">
 			<div>
-				<label for="benutzername">Benutzername:</label>
-				<input type="text" name="benutzername" id="benutzername">
+				<label for="nutzer">Benutzername oder E-Mail:</label>
+				<input type="text" name="nutzer" id="nutzer">
 			</div>
 
 			<div>
@@ -72,9 +80,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			</div>
 
 			<div>
-				<button type="submit">Anmelden</button>
+				<button type="submit">Login</button>
+			</div>
+			
+			<div class="login_error">
+			  <?php if (!empty($fehler)) {
+			      printf($fehler);
+		            }
+		      ?>
 			</div>
 		</form>
+		</div>
 	</section>
 
 	<footer>
