@@ -78,6 +78,31 @@ CREATE TABLE IF NOT EXISTS `MedienDB`.`Medium_has_Tag` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `MedienDB`.`Tag_Request`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MedienDB`.`Tag_Request` (
+  `RequestID` INT NOT NULL AUTO_INCREMENT,
+  `NutzerID` INT NOT NULL,
+  `MediumID` INT NOT NULL,
+  `RequestedTagName` VARCHAR(50) NOT NULL,
+  `Kommentar` TEXT NULL,
+  `Status` ENUM('offen', 'genehmigt', 'abgelehnt') DEFAULT 'offen',
+  `ErstelltAm` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RequestID`),
+  INDEX `fk_TagRequest_Nutzer_idx` (`NutzerID` ASC),
+  INDEX `fk_TagRequest_Medium_idx` (`MediumID` ASC),
+  CONSTRAINT `fk_TagRequest_Nutzer`
+    FOREIGN KEY (`NutzerID`)
+    REFERENCES `MedienDB`.`Nutzer` (`NutzerID`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_TagRequest_Medium`
+    FOREIGN KEY (`MediumID`)
+    REFERENCES `MedienDB`.`Medium` (`MediumID`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
