@@ -207,6 +207,10 @@ img[class="header_user"] {
 	top: 28px;
 }
 
+.menu_admin {
+	text-decoration: underline;
+    text-decoration-color: var(--accent_3);
+}
 /* Styling des Seiteninhalts ================================================*/
 section {
 	flex: 1;
