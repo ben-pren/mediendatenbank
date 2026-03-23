@@ -13,126 +13,192 @@ require_once __DIR__ . "/../config/db.php";
 </head>
 <body>
     <header>
-		<?php include  __DIR__ . '/../includes/header.php'; ?>
-	</header>
+      <?php include  __DIR__ . '/../includes/header.php'; ?>
+  </header>
 
-	<?php include __DIR__ . '/../includes/background.php'; ?>
-    
-    <section>
-      <h1>Dashboard</h1>
-      <p>Willkommen, <?php echo $_SESSION["Benutzername"]; ?>!</p>
-        <div class="search_container">
-            <form class="search_form" action="dashboard.php" method="post">
-                <input class="search_bar" type="text" name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>" placeholder="Suchberiffe..">
-                
-                <div class="search_options">
-                    <select name="media_type" onchange="this.form.submit()">
-                        <option value="">Alle Medien</option>
-                        <option value="picture" <?php if(($_POST['media_type'] ?? '') === 'picture') echo 'selected'; ?>>Bilder</option>
-                        <option value="audiobook" <?php if(($_POST['media_type'] ?? '') === 'audiobook') echo 'selected'; ?>>Hörbücher</option>
-                        <option value="ebook" <?php if(($_POST['media_type'] ?? '') === 'ebook') echo 'selected'; ?>>E-Books</option>
-                        <option value="video" <?php if(($_POST['media_type'] ?? '') === 'video') echo 'selected'; ?>>Videos</option>
-                    </select>
+  <?php include __DIR__ . '/../includes/background.php'; ?>
 
-                    <label>
-                        <input type="checkbox" name="own_media" value="1" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
-                    </label>
-                </div>
-            </form>
+  <section>
+    <div class="dashboard_heading">
+        <h2>Willkommen in der Galerie, <?php echo $_SESSION["Benutzername"]; ?>!</h2>
+    </div>
+    <div class="search_container">
+        <form class="search_form" action="dashboard.php" method="post">
+            <!-- Suchleiste -->
+            <input class="search_bar" type="text" name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>" placeholder="Nach Titel oder Tags suchen (mit Komma trennen)">
 
-            
+            <div class="search_options">
+                <!-- Dropdown zur Auswahl von Medienkategorien -->
+                <select name="media_type" onchange="this.form.submit()">
+                    <option value="">Alle Medien</option>
+                    <option value="picture" <?php if(($_POST['media_type'] ?? '') === 'picture') echo 'selected'; ?>>Bilder</option>
+                    <option value="audiobook" <?php if(($_POST['media_type'] ?? '') === 'audiobook') echo 'selected'; ?>>Hörbücher</option>
+                    <option value="ebook" <?php if(($_POST['media_type'] ?? '') === 'ebook') echo 'selected'; ?>>E-Books</option>
+                    <option value="video" <?php if(($_POST['media_type'] ?? '') === 'video') echo 'selected'; ?>>Videos</option>
+                </select>
 
-            <?php
-            // verhindert 'undefined' Fehler bei erstaufruf der Seite
-            if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
-            // Abfrage der Medien in der DB
+                <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
+                <label>
+                    <input type="checkbox" name="own_media" value="1" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
+                </label>
+            </div>
+        </form>
 
-            $search_terms = array_map('trim', explode(',', $_POST['searchbar']));
+        <?php
+        
+        // verhindert 'undefined' Fehler bei erstaufruf der Seite
+        if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 
-            $where_parts = [];
+        // Suchbegriffe in einem Array speichern (Trennung durch Kommata)
+        $search_terms = array_map('trim', explode(',', $_POST['searchbar']));
 
-            foreach ($search_terms as $t) {
-                $t = addslashes($t);
-                $where_parts[] = "(
-                t.TagName LIKE '%$t%' 
-                OR m.Titel LIKE '%$t%' 
-                OR m.Medienart LIKE '%$t%' 
-                OR m.Datentyp LIKE '%$t%')
-                ";
-            }
+        // Array fuer die Oder-Verknuepfung der Suchbegriffe erstellen
+        $or_parts = [];
 
-            $and_parts = [];
+        foreach ($search_terms as $t) {
+            $t = addslashes($t);
+            $or_parts[] = "(m2.Titel LIKE '%$t%' OR t2.TagName LIKE '%$t%')";
+        }
 
-            if (isset($_POST['own_media'])) {
-                $user_id = $_SESSION['NutzerID'];
-                $and_parts[] = "m.NutzerID = $user_id";
-            }
+        // Array fuer die Und-Verknuepfung der Medienkategorie erstellen
+        $and_parts = [];
 
-            $media_type = $_POST['media_type'] ?? '';
+        if (isset($_POST['own_media'])) {
+            $user_id = $_SESSION['NutzerID'];
+            $and_parts[] = "m.NutzerID = $user_id";
+        }
 
-            if ($media_type === 'picture') {
-                $and_parts[] = "m.Medienart = 'Bild'";
-            }
+        $media_type = $_POST['media_type'] ?? '';
 
-            if ($media_type === 'audiobook') {
-                $and_parts[] = "m.Medienart = 'Hoerbuch'";
-            }
+        if ($media_type === 'picture') {
+            $and_parts[] = "m.Medienart = 'Bild'";
+        }
 
-            if ($media_type === 'ebook') {
-                $and_parts[] = "m.Medienart = 'eBook'";
-            }
+        if ($media_type === 'audiobook') {
+            $and_parts[] = "m.Medienart = 'Hoerbuch'";
+        }
 
-            if ($media_type === 'video') {
-                $and_parts[] = "m.Medienart = 'Video'";
-            }
+        if ($media_type === 'ebook') {
+            $and_parts[] = "m.Medienart = 'eBook'";
+        }
 
-            $where = "(" . implode(" OR ", $where_parts) . ")";
+        if ($media_type === 'video') {
+            $and_parts[] = "m.Medienart = 'Video'";
+        }
 
-            if (!empty($and_parts)) {
-                $where .= " AND " . implode(" AND ", $and_parts);
-            }
+        // Suchbegriffe Oder-Verknuepfen
+        $where = "(" . implode(" OR ", $or_parts) . ")";
 
-            $sql = "
-            SELECT DISTINCT m.MediumID, m.Titel, m.Datentyp, m.Path FROM Medium m
-            LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
-            LEFT JOIN Tag t ON t.TagID = mht.TagID
+        // Optional die Medienkategorie mit den Suchberiffen Und-Verknuepfen
+        if (!empty($and_parts)) {
+            $where .= " AND " . implode(" AND ", $and_parts);
+        }
+
+        // SQL-Anfrage zusammensetzen
+        $sql = "
+        SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Path, t.TagName FROM Medium m
+        LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
+        LEFT JOIN Tag t ON t.TagID = mht.TagID
+        WHERE m.MediumID IN (
+            SELECT m2.MediumID
+            FROM Medium m2
+            LEFT JOIN Medium_has_Tag mht2 ON m2.MediumID = mht2.MediumID
+            LEFT JOIN Tag t2 ON t2.TagID = mht2.TagID
             WHERE $where
-            ";
-            
-            $result = mysqli_query($connection,$sql);
+            )
+        ORDER BY m.MediumID, t.TagName;
+        ";
 
-            printf("<p>%s Datensätze gefunden</p>", $result->num_rows);
-            ?>
-        </div>
+        $result = mysqli_query($connection,$sql);
 
-        <div class="media_frame">
+        $entries = [];
+        $unique_entries = [];
 
-            <?php
-            // Ausgabe der Individuellen Datensaetze
-            while ($entry = $result->fetch_assoc()) {
-                printf("
-                    <div class='media_container' onclick=\"window.location='gallery.php?id=%d'\">
-                        <img class='media_preview' src='%s' alt='Error'>
-                        <div class='media_description'>
-                            <h4>%s</h4>
-                            <p>%s</p>
-                        </div>
-                    </div>
-                    ",
-                    $entry["MediumID"],
-                    $entry["Path"],
-                    $entry["Titel"],
-                    $entry["Datentyp"]
-                );
+        // Anzahl der einmaligen MediumID's bestimmen
+        while ($entry = $result->fetch_assoc()) {
+            $entries[] = $entry;
+            $unique_entries[$entry['MediumID']] = true;
+        }
+
+        $number_of_entries = count($unique_entries);
+
+        if ($number_of_entries === 1) {
+            printf("<p>1 Datensatz gefunden</p>");
+        } else {
+            printf("<p>%s Datensätze gefunden</p>", $number_of_entries);
+        }
+        ?>
+    </div>
+
+    <div class="media_frame">
+        <?php
+        $lastMediumID = null;
+
+        // Ausgabe der Individuellen Datensaetze
+        // Da eine MediumID mehrfach auftaucht, wenn das Medium mehrere Tag's hat muss jeder Datensatz dahingehend geprueft werden
+        // Gehoeren mehrere aufeinanderfolgende Medien zur gleichen ID werden die allgemeinen Info's nur einmal ausgegeben und
+        // anschliessend nur noch die Tag's
+        foreach ($entries as $entry) {
+
+            // Pruefen ob der Datensatz noch zum aktuellen Medium gehoert
+            if ($entry['MediumID'] !== $lastMediumID) {
+
+                // Schliessen des aktuellen media_container's vor dem Wechsel zum Naechsten Datensatz
+                if ($lastMediumID !== null) {
+                    printf("</div>"); // tag_container
+                    printf("</div>"); // media_description
+                    printf("</div>"); // media_container
+                }
+
+                // Verlinkung fuer die Detailansicht beim Anklicken von einem Medium
+                printf("<div class='media_container' onclick=\"window.location='gallery.php?id=%d'\">", $entry["MediumID"]);
+
+                // Auswahl des korrekten Containers fuer das Vorschaubild (Platzhalter fuer eBook's und Video's)
+                if ($entry['Medienart'] === 'Bild') {
+                    printf("<img class='media_preview' src='%s' alt='Error'>", $entry["Path"]);
+                }
+
+                if ($entry['Medienart'] === 'Hoerbuch') {
+                    printf("<img class='media_preview' src='../../public/icons/hoerbuch.svg' alt='Error'>");
+                }
+
+                if ($entry['Medienart'] === 'eBook') {
+                    printf("<img class='media_preview' src='../../public/icons/ebook.svg' alt='Error'>");
+                }
+
+                if ($entry['Medienart'] === 'Video') {
+                    printf("<video class='media_preview' src='%s' preload='auto'></video>", $entry["Path"]);
+                }
+
+                // Allgemeine Info's zum Medium ausgeben
+                printf("<div class='media_description'>");
+                printf("<h4>%s (%s)</h4>",$entry["Titel"], $entry["Datentyp"]);
+                printf("<p>Tags:</p>");
+                printf("<div class='tag_container'>");
+
+                $lastMediumID = $entry['MediumID'];
             }
-            ?>
 
-        </div>
-    </section>
-    
-    <footer>
-        <?php include  __DIR__ . '/../includes/footer.php'; ?>
-    </footer>
+            // Tag's ausgeben
+            if (!empty($entry['TagName'])) {
+                printf("<p class='tags'>%s</p>", $entry['TagName']);
+            } else {
+                printf("<p>Keine</p>");
+            }
+        }
 
+        // Schliessen des letzten media_container's, wenn vorhanden
+        if ($lastMediumID !== null) { 
+            printf("</div>"); // tag_container
+            printf("</div>"); // media_description
+            printf("</div>"); // media_container
+        }
+        ?>
+    </div>
+</section>
+
+<footer>
+    <?php include  __DIR__ . '/../includes/footer.php'; ?>
+</footer>
 </body>
 </html>
