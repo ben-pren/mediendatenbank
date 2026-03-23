@@ -6,13 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID'])) {
     $nutzerID = $_SESSION['NutzerID'];
     $requestedTagName = $_POST['RequestedTagName'];
     $kommentar = $_POST['Kommentar'] ?? null;
-    $mediumID = (!empty($_POST['MediumID']) && $_POST['MediumID'] != 0) ? $_POST['MediumID'] : null;
 
     $stmt = $connection->prepare(
-        "INSERT INTO Tag_Request (NutzerID, MediumID, RequestedTagName, Kommentar, Status) VALUES (?, ?, ?, ?, 'offen')"
+        "INSERT INTO Tag_Request (NutzerID, RequestedTagName, Kommentar, Status) VALUES (?, ?, ?, 'offen')"
     );
     
-    $stmt->bind_param("iiss", $nutzerID, $mediumID, $requestedTagName, $kommentar);
+    $stmt->bind_param("iss", $nutzerID, $requestedTagName, $kommentar);
     
     if ($stmt->execute()) {
         // Redirect zurück zur Startseite (public/index.php)

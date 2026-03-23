@@ -36,26 +36,19 @@ $showlogin = isset($_SESSION['NutzerID']);
         <li><a href="/MedienDB/public/index.php">Startseite</a></li>
         
         <?php if($showlogin): ?>
-            <li>
-                <a href="javascript:void(0)" onclick="toggle_submenu()">Meine Medien ></a>
-                <ul class="dropdown_content" id="dropdown_subelements">
-                    <li><a href="/MedienDB/public/index.php?page=media_list">Alle</a></li>
-                    <li><a href="#">Bilder</a></li>
-                    <li><a href="#">Videos</a></li>
-                    <li><a href="#">Hörbücher</a></li>
-                    <li><a href="#">eBooks</a></li>
-                </ul>
-            </li>
-            <li><a href="/MedienDB/public/index.php?page=media_upload">Neue Medien</a></li>
+            <li><a href="/MedienDB/src/pages/dashboard.php">Galerie</a></li>
+
+            <li><a href="/MedienDB/src/pages/media_upload.php">Medienupload</a></li>
             
             <li><a href="/MedienDB/src/pages/tag_request_form.php">Tag anfragen</a></li>
 
             <?php if(isset($_SESSION['Rolle']) && $_SESSION['Rolle'] === 'Admin'): ?>
-                <li><a href="/MedienDB/src/pages/tags_admin.php" style="color: #ffcc00; font-weight: bold;">Admin: Tag-Anfragen</a></li>
+                <li class="menu_admin"><a href="/MedienDB/src/pages/tags_admin.php">Tag-Anfragen</a></li>
+                <li class="menu_admin"><a href='/MedienDB/src/pages/tags.php'>Tags</a></li>
             <?php endif; ?>
         <?php endif; ?> 
         
-        <li><a href="/MedienDB/public/index.php?page=impressum">Impressum</a></li>
+        <li><a href="/MedienDB/src/pages/impressum.php">Impressum</a></li>
     </ul>
 </nav>
 
@@ -68,8 +61,8 @@ $showlogin = isset($_SESSION['NutzerID']);
 
 <?php if(!$showlogin): ?>
     <div class="header_container signup_buttons">
-        <a href="/MedienDB/public/index.php?page=login" class="login_button">Anmelden</a>
-        <a href="/MedienDB/public/index.php?page=signup" class="login_button">Registrieren</a>       
+	  <a href="/MedienDB/src/pages/login.php" class="login_button">Anmelden</a>
+      <a href="/MedienDB/src/pages/signup.php" class="login_button">Registrieren</a>     
     </div>
 <?php endif; ?>
 
