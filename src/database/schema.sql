@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `MedienDB`.`Medium` (
   `Medienart` ENUM('Bild', 'Video', 'Hoerbuch', 'eBook') NOT NULL,
   `Datentyp` VARCHAR(45) NOT NULL,
   `Groesse` VARCHAR(45) NOT NULL,
-  `Path` VARCHAR(100) NOT NULL,
+  `Path` VARCHAR(300) NOT NULL,
   `NutzerID` INT NOT NULL,
   PRIMARY KEY (`MediumID`),
   INDEX `fk_Medium_Nutzer1_idx` (`NutzerID` ASC) ,
