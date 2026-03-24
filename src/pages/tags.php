@@ -22,7 +22,7 @@ if(isset($_POST['neu_tag']) && !empty($_POST['altered_tag'])) {
    $tag_titel_compare = strtolower(preg_replace('/\s+/', '', $neu_tag_name));
    $tag_id = $_POST['neu_tag'];
    
-   $sql = "SELECT * FROM tag";
+   $sql = "SELECT * FROM tag WHERE TagID != '$tag_id'";
    $result = mysqli_query($connection,$sql);
    $doppeltag  = false;
    //check doppel tags

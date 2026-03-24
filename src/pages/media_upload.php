@@ -232,7 +232,7 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
           id="userfiles" 
           name="userfiles[]"
           multiple 
-          accept=".png, .jpg, .jpeg , .mp3, .mp4, .html"
+          accept=".png, .jpg, .jpeg , .mp3, .mp4, .html, .pdf"
           required
         >
         <button type="submit">Upload vorbereiten</button>
