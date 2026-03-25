@@ -55,7 +55,7 @@ if (isset($_POST['speichern']) && $is_owner) {
     $erfolg = "Änderungen gespeichert.";
 }
 
-/* Tags laden vorläufig */
+/* Tags laden */
 $tags = [];
 $tag_result = mysqli_query($connection,
     "SELECT t.TagName FROM Tag t
@@ -85,6 +85,12 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 
     <section class="gallery_section">
         <div class="media_details">
+            <?php if ($is_owner && $modus !== 'edit'): ?>
+            <a href="gallery.php?id=<?php echo $id; ?>&bearbeiten=1"
+                class="edit_top_button">
+                <img src="../../public/icons/einstellungen.svg" alt="Bearbeiten">
+            </a>
+            <?php endif; ?>
             <a href="dashboard.php" class="close_button">
                 <img src="../../public/icons/schliessen.svg" alt="Zurück">
             </a>
@@ -107,6 +113,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 			} elseif ($medienart === 'Hoerbuch') {
     		echo "
         		<div class='media media_audio'>
+                    <img src='../../public/icons/hoerbuch.svg' alt='Hörbuch' class='audio_icon'>
             		<audio controls>
                 		<source src='$path' type='audio/mpeg'>
             		</audio>
@@ -114,12 +121,12 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
     		";
 
 			} elseif ($medienart === 'eBook') {
+                /* Mit Link zur Vollansicht */
     		echo "
-        		<iframe class='media' src='$path' title='eBook-Vorschau'>
-            		<p>Vorschau nicht möglich. 
-               			<a href='$path' target='_blank'>PDF herunterladen</a>
-            		</p>
-        		</iframe>
+                <div style='display:flex; flex-direction:column; gap:8px;'>
+                    <iframe class='media' src='$path' title='eBook-Vorschau'></iframe>
+                    <a href='$path' target='_blank' style='text-align:center; font-size:14px;'>Vollansicht öffnen </a>
+                </div>
     		";
 			}
 			?>
@@ -169,29 +176,17 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 
                     </form>
 
-                <?php else: ?>
-
-                           
+                <?php else: ?>              
 
                     <!-- Bearbeiten, fehlen noch Tags -->
                     <div class="media_info_row">
                         <span class="media_label">Name</span>
                         <span><?php echo htmlspecialchars($medium['Titel']); ?></span>
-                        <?php if ($is_owner): ?>
-                            <a href="gallery.php?id=<?php echo $id; ?>&bearbeiten=1" class="edit_inline_button">
-                                <img src="../../public/icons/einstellungen.svg" alt="Bearbeiten">
-                            </a>
-                        <?php endif; ?>
                     </div>
 
                     <div class="media_info_row">
                         <span class="media_label">Tags</span>
                         <span><?php echo !empty($tags) ? htmlspecialchars(implode(', ', $tags)) : 'Keine Tags'; ?></span>
-                        <?php if ($is_owner): ?>
-                            <a href="gallery.php?id=<?php echo $id; ?>&bearbeiten=1" class="edit_inline_button">
-                                <img src="../../public/icons/einstellungen.svg" alt="Bearbeiten">
-                            </a>
-                        <?php endif; ?>
                     </div>
 
                     <div class="media_info_row">
