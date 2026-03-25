@@ -47,24 +47,56 @@ if (isset($_POST['loeschen']) && $is_owner) {
     exit();
 }
 
-/* Neuer Name speichern */
+// Änderung von Titel und Tags
 if (isset($_POST['speichern']) && $is_owner) {
-    $titel = addslashes($_POST['titel']);
-    mysqli_query($connection, "UPDATE Medium SET Titel = '$titel' WHERE MediumID = $id");
-    $medium['Titel'] = $_POST['titel'];
-    $erfolg = "Änderungen gespeichert.";
+    /* Neuer Name speichern */
+    if ($medium['Titel'] != $_POST['titel']) {
+        $titel = ($_POST['titel']);
+        mysqli_query($connection, "UPDATE Medium SET Titel = '$titel' WHERE MediumID = $id");
+        $medium['Titel'] = $_POST['titel'];
+        $erfolg = "Änderungen gespeichert.";
+    } 
+    /* Neuer Tags speichern */
+    $tags_new = $_POST['tags'];
+    $connection->begin_transaction(); 
+    
+    try {
+        mysqli_query($connection, "DELETE FROM Medium_has_Tag WHERE MediumID = $id");
+        
+        foreach ($tags_new as $tag_id) {
+            mysqli_query($connection,"INSERT INTO Medium_has_Tag (MediumID, TagID) VALUES ($id, $tag_id)");
+        }
+        
+        $connection->commit();
+        $erfolg = "Änderungen gespeichert.";
+        
+    } catch (Exception $e) {
+        $connection->rollback();
+        $erfolg = "Fehler beim Speichern der Tags.";
+    }
 }
 
-/* Tags laden */
-$tags = [];
+/* Tags des Mediums laden */
+$tags_medium = [];
 $tag_result = mysqli_query($connection,
-    "SELECT t.TagName FROM Tag t
+    "SELECT t.TagName, t.TagID FROM Tag t
      JOIN Medium_has_Tag mht ON t.TagID = mht.TagID
      WHERE mht.MediumID = $id"
 );
 while ($row = $tag_result->fetch_assoc()) {
-    $tags[] = $row['TagName'];
+    $tags_medium[$row['TagID']] = $row['TagName'];
 }
+
+/* Alle Tags laden*/
+$tags_all = [];
+$tag_result_all = mysqli_query($connection, "SELECT TagID, TagName FROM Tag ORDER BY TagName");
+while ($row = $tag_result_all->fetch_assoc()) {
+    $tags_all[] = $row;
+}
+
+
+
+
 
 /* Bearbeitung */
 $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 'view';
@@ -102,6 +134,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 
 			if ($medienart === 'Bild') {
     		echo "<img class='media' src='$path' alt='Vorschau'>";
+    		    
 
 			} elseif ($medienart === 'Video') {
     		echo "
@@ -125,7 +158,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
     		echo "
                 <div style='display:flex; flex-direction:column; gap:8px;'>
                     <iframe class='media' src='$path' title='eBook-Vorschau'></iframe>
-                    <a href='$path' target='_blank' style='text-align:center; font-size:14px;'>Vollansicht öffnen </a>
+                    <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen </a>
                 </div>
     		";
 			}
@@ -149,9 +182,21 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                                    maxlength="100" required>
                         </div>
 
-                        <div class="media_info_row">
-                            <span class="media_label">Tags</span>
-                            <span><?php echo !empty($tags) ? htmlspecialchars(implode(', ', $tags)) : 'Keine Tags'; ?></span>
+                        
+                        <span class="media_label">Tags</span>  
+                        <div class="tags_container">                    
+                              <?php foreach($tags_all as $tag): ?>
+                              <div class="tag">
+                                <input type="checkbox" name="tags[]" value="<?php echo $tag['TagID'] ?>"
+                                	   id="tag_<?php echo $tag['TagID'] ?>" <?php echo isset($tags_medium[$tag['TagID']]) ? 'checked' : ''; ?>
+                               	>
+                               	<label for="tag_<?php echo $tag['TagID']?>" class="tag_label"><?php echo $tag['TagName']?></label>
+                              </div>
+                              <?php endforeach; ?> 	                              
+                            
+                            <?php if (empty($tags_all)): ?>
+                                <p>Keine Tags vorhanden.</p>
+                            <?php endif; ?>
                         </div>
 
                         <div class="media_info_row">
@@ -170,23 +215,23 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                         </div>
 
                         <div class="media_options">
-                            <button type="submit" name="speichern">Speichern</button>
-                            <a href="gallery.php?id=<?php echo $id; ?>">Abbrechen</a>
+                            <button type="submit" name="speichern" class="button">Speichern</button>
+                            <a href="gallery.php?id=<?php echo $id; ?>" class="button" >Abbrechen</a>
                         </div>
 
                     </form>
 
                 <?php else: ?>              
 
-                    <!-- Bearbeiten, fehlen noch Tags -->
+                    <!-- Medienansicht -->
                     <div class="media_info_row">
                         <span class="media_label">Name</span>
                         <span><?php echo htmlspecialchars($medium['Titel']); ?></span>
                     </div>
 
-                    <div class="media_info_row">
+                    <div class="media_info_row tag_container">
                         <span class="media_label">Tags</span>
-                        <span><?php echo !empty($tags) ? htmlspecialchars(implode(', ', $tags)) : 'Keine Tags'; ?></span>
+                        <span><?php echo !empty($tags_medium) ? htmlspecialchars(implode(', ', $tags_medium)) : 'Keine Tags'; ?></span>
                     </div>
 
                     <div class="media_info_row">
