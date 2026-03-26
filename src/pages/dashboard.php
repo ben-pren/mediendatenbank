@@ -39,7 +39,7 @@ require_once __DIR__ . "/../config/db.php";
 
                 <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
                 <label class="checkbox">
-                    <input type="checkbox" name="own_media" value="1" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
+                    <input type="checkbox" name="own_media" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
                 </label>
             </div>
 
@@ -50,7 +50,7 @@ require_once __DIR__ . "/../config/db.php";
         </form>
 
         <?php        
-        // verhindert 'undefined' Fehler bei Erstaufruf der Seite
+        // verhindert 'undefined' Fehler bei erstaufruf der Seite
         if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 
         // Suchbegriffe (Suchleiste) in einem Array speichern (Trennung durch Kommata)

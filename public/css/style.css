@@ -362,12 +362,6 @@ footer div a:active{
     border: solid;
 }
 
-.media_details table {
-	display: block;
-	margin-left: 20px;
-	width: 40%;
-}
-
 .media_options {
 	display: flex;
 	flex-direction: row;
@@ -417,23 +411,16 @@ footer div a:active{
     min-width: 90px;      
 }
 
-.edit_inline_button {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 4px;
-    border-radius: 4px;
-    text-decoration: none;
+.edit_top_button {
+    position: absolute;
+    top: 12px;
+	right: 48px;
+	text-decoration: none;
 }
 
-.edit_inline_button:hover {
-    opacity: 0.7;
-    cursor: pointer;
-}
-
-.edit_inline_button img {
-    width: 1.5em;
-    height: 1.5em;
-	vertical-align:middle;
+.edit_top_button img {
+	width: 1.5em;
+	height: 1.5em;
 }
 
 .close_button {
@@ -448,11 +435,132 @@ footer div a:active{
 	height: 1.5em;
 }
 
-
 .media_delete_button_unten {
     position: absolute;
     bottom: 12px;
     right: 12px;
+}
+
+.media_audio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary_3);
+    border: none;
+    gap: 100px;
+}
+
+.media_audio .audio_icon {
+    width: 160px;
+    height: 160px;
+}
+
+.media_audio audio {
+    width: 90%;
+    border-radius: 8px;
+}
+
+.media_erfolg {
+	color: var(--accent_2);
+	font-weight: bold;
+}
+
+.link {
+	text-decoration: none;
+	color: var(--accent_1);
+}
+
+.link:hover {
+	
+	color: var(--accent_4);
+}
+
+.media_info_row input[type="text"] {
+	padding: 1.5px 3px;
+	border: 2px solid var(--neutral_2);
+	border-radius: 5px;
+	background: var(--primary_1);
+	align-self: center;
+}
+
+.media_info_row input[type="text"]:focus {
+  border-color: black;
+  outline: none;
+}
+
+.tags_container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	border: 2px solid var(--neutral_2);
+	border-radius: 10px;
+	background: var(--primary_1);
+	max-height: 95px;
+	overflow: auto;
+	margin: 5px 0 5px 0;
+}
+
+.tag input {
+	position: absolute; 
+	opacity: 0;
+}
+
+.tag_label {
+	display: inline-block;
+	color: black;
+	font-size: 14px;
+	border: 1px solid black;
+	border-radius: 10px;
+    background: var(--neutral_2);
+    padding: 2px 4px;
+    margin: 2px;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.1s;
+    overflow: hidden;
+}
+
+.tag_label:hover {
+    transform: translateY(-2px);
+    background: var(--neutral_1);
+}
+
+.tag_label:active {
+    transform: translateY(1px);
+}
+
+.tag input:checked + .tag_label {
+    background: var(--neutral_3);
+    border-color: var(--neutral_1);
+    color: white;
+}
+
+.tag input:checked + .tag_label::after {
+    content: "✔";
+    margin: 1px;
+}
+
+.button {
+	background-color: var(--primary_1);
+	color: black;
+	text-decoration: none;
+	font-size: 16px;
+	border: 1px solid black;
+	border-radius: 10px;
+	padding: 2px 5px;
+	display: block;
+	margin: 0;
+	cursor: pointer; 
+	transition: 0.3s;
+}
+
+.button:hover {
+	background-color: black;
+	color: var(--primary_1);
+	border-color: var(--primary_1);
 }
 
 /* Styling von login.php ====================================================*/

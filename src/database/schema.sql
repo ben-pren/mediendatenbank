@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `MedienDB`.`Medium` (
   `Medienart` ENUM('Bild', 'Video', 'Hoerbuch', 'eBook') NOT NULL,
   `Datentyp` VARCHAR(45) NOT NULL,
   `Groesse` VARCHAR(45) NOT NULL,
-  `Path` VARCHAR(100) NOT NULL,
+  `Path` VARCHAR(300) NOT NULL,
   `NutzerID` INT NOT NULL,
   PRIMARY KEY (`MediumID`),
   INDEX `fk_Medium_Nutzer1_idx` (`NutzerID` ASC) ,
@@ -75,6 +75,25 @@ CREATE TABLE IF NOT EXISTS `MedienDB`.`Medium_has_Tag` (
     REFERENCES `MedienDB`.`Tag` (`TagID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `MedienDB`.`Tag_Request`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `MedienDB`.`Tag_Request` (
+  `RequestID` INT NOT NULL AUTO_INCREMENT,
+  `NutzerID` INT NOT NULL,
+  `RequestedTagName` VARCHAR(50) NOT NULL,
+  `Kommentar` TEXT NULL,
+  `Status` ENUM('offen', 'genehmigt', 'abgelehnt') DEFAULT 'offen',
+  `ErstelltAm` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`RequestID`),
+  INDEX `fk_TagRequest_Nutzer_idx` (`NutzerID` ASC),
+  CONSTRAINT `fk_TagRequest_Nutzer`
+    FOREIGN KEY (`NutzerID`)
+    REFERENCES `MedienDB`.`Nutzer` (`NutzerID`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB;
 
 
