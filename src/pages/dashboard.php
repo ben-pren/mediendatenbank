@@ -29,8 +29,8 @@ require_once __DIR__ . "/../config/db.php";
 
             <div class="search_options">
                 <!-- Dropdown zur Auswahl von Medienkategorien -->
-                <select name="media_type" onchange="this.form.submit()">
-                    <option value="">Alle Medien</option>
+                <select class="dropdown" name="media_type" onchange="this.form.submit()">
+                    <option value="">Alle Kategorien</option>
                     <option value="picture" <?php if(($_POST['media_type'] ?? '') === 'picture') echo 'selected'; ?>>Bilder</option>
                     <option value="audiobook" <?php if(($_POST['media_type'] ?? '') === 'audiobook') echo 'selected'; ?>>Hörbücher</option>
                     <option value="ebook" <?php if(($_POST['media_type'] ?? '') === 'ebook') echo 'selected'; ?>>E-Books</option>
@@ -38,63 +38,71 @@ require_once __DIR__ . "/../config/db.php";
                 </select>
 
                 <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
-                <label>
-                    <input type="checkbox" name="own_media" value="1" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
+                <label class="checkbox">
+                    <input type="checkbox" name="own_media" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
                 </label>
             </div>
+
+            <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
+            <?php if (($_POST['searchbar'] ?? '') !== '' || ($_POST['media_type'] ?? '') !== '' || !empty($_POST['own_media'])) { ?>
+                <img class="reset" src="/MedienDB/public/icons/reset.svg" alt="Reset" onclick="window.location.href = window.location.pathname">
+            <?php } ?>
         </form>
 
-        <?php
-        
+        <?php        
         // verhindert 'undefined' Fehler bei erstaufruf der Seite
         if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 
-        // Suchbegriffe in einem Array speichern (Trennung durch Kommata)
+        // Suchbegriffe (Suchleiste) in einem Array speichern (Trennung durch Kommata)
         $search_terms = array_map('trim', explode(',', $_POST['searchbar']));
 
-        // Array fuer die Oder-Verknuepfung der Suchbegriffe erstellen
-        $or_parts = [];
-
-        foreach ($search_terms as $t) {
-            $t = addslashes($t);
-            $or_parts[] = "(m2.Titel LIKE '%$t%' OR t2.TagName LIKE '%$t%')";
+        // Array's fuer die Suchfilter
+        $search_params = [];
+        $filters = [];
+        $having_params = [];
+        
+        // Aus den Suchbegriffen SQL-Klauseln generieren
+        foreach ($search_terms as $term) {
+            $term = addslashes($term);
+            $clause = "(m2.Titel LIKE '%$term%' OR t2.TagName LIKE '%$term%')";
+            $search_params[] = $clause;
+            $having_params[] = "SUM(CASE WHEN $clause THEN 1 ELSE 0 END) > 0";
         }
 
-        // Array fuer die Und-Verknuepfung der Medienkategorie erstellen
-        $and_parts = [];
-
-        if (isset($_POST['own_media'])) {
-            $user_id = $_SESSION['NutzerID'];
-            $and_parts[] = "m.NutzerID = $user_id";
-        }
-
+        // Aus dem Dropdown-Menue und der Checkbox SQL-Klauseln generieren
         $media_type = $_POST['media_type'] ?? '';
 
         if ($media_type === 'picture') {
-            $and_parts[] = "m.Medienart = 'Bild'";
+            $filters[] = "m.Medienart = 'Bild'";
         }
 
         if ($media_type === 'audiobook') {
-            $and_parts[] = "m.Medienart = 'Hoerbuch'";
+            $filters[] = "m.Medienart = 'Hoerbuch'";
         }
 
         if ($media_type === 'ebook') {
-            $and_parts[] = "m.Medienart = 'eBook'";
+            $filters[] = "m.Medienart = 'eBook'";
         }
 
         if ($media_type === 'video') {
-            $and_parts[] = "m.Medienart = 'Video'";
+            $filters[] = "m.Medienart = 'Video'";
         }
 
-        // Suchbegriffe Oder-Verknuepfen
-        $where = "(" . implode(" OR ", $or_parts) . ")";
-
-        // Optional die Medienkategorie mit den Suchberiffen Und-Verknuepfen
-        if (!empty($and_parts)) {
-            $where .= " AND " . implode(" AND ", $and_parts);
+        if (isset($_POST['own_media'])) {
+            $user_id = $_SESSION['NutzerID'];
+            $filters[] = "m.NutzerID = $user_id";
         }
 
-        // SQL-Anfrage zusammensetzen
+        // SQL-Klauseln zusammenfuehren
+        $where_clause = "(" . implode(" OR ", $search_params) . ")";
+
+        if (!empty($filters)) {
+            $where_clause .= " AND " . implode(" AND ", $filters);
+        }
+
+        $having_clause = "(" . implode(" AND ", $having_params) . ")";
+
+        // Vollstaendige SQL-Anfrage zusammensetzen
         $sql = "
         SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Path, t.TagName FROM Medium m
         LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
@@ -104,7 +112,10 @@ require_once __DIR__ . "/../config/db.php";
             FROM Medium m2
             LEFT JOIN Medium_has_Tag mht2 ON m2.MediumID = mht2.MediumID
             LEFT JOIN Tag t2 ON t2.TagID = mht2.TagID
-            WHERE $where
+            WHERE $where_clause
+            GROUP BY m2.MediumID
+            HAVING
+            $having_clause
             )
         ORDER BY m.MediumID, t.TagName;
         ";
