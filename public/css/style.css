@@ -297,6 +297,7 @@ footer div a:active{
 .media_container {
 	width: 30%;
 	display: flex;
+	align-items: flex-start;
 	border: solid;
 	border-width: 2px;
 	border-radius: 20px;
