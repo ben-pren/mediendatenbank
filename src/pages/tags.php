@@ -4,6 +4,10 @@ use function pcov\waiting;
 require_once '../includes/auth.php';
 require_once __DIR__ . "/../config/db.php";
 
+if ($_SESSION['Rolle'] !== 'Admin') {
+    die("Zugriff verweigert.");
+}
+
 // abbruch ändern von Tag
 if(isset($_POST['neu_tag_abbruch'])) {
    header("Location: " . "/MedienDB/src/pages/tags.php");
