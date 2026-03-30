@@ -2,7 +2,8 @@
 session_start();
 require_once '../config/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID'])) {
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID']) && isset($_POST['RequestedTagName'])) {
     $nutzerID = $_SESSION['NutzerID'];
     $requestedTagName = $_POST['RequestedTagName'];
     $kommentar = $_POST['Kommentar'] ?? null;
@@ -20,4 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID'])) {
         echo "Fehler beim Senden: " . $connection->error;
     }
 }
+
+
+$connection->close();
 ?>
