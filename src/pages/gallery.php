@@ -133,7 +133,11 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 			$path      = htmlspecialchars($medium['Path']);
 
 			if ($medienart === 'Bild') {
-    		echo "<img class='media' src='$path' alt='Vorschau'>";
+    		echo "<div style='display:flex; flex-direction:column; gap:8px;'>
+                    <img class='media' src='$path' alt='Vorschau'>
+                    <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen</a>
+                </div>
+            ";
     		    
 
 			} elseif ($medienart === 'Video') {
