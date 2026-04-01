@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . "/../includes/auth.php";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . "/../config/db.php";
 ?>
 
@@ -20,7 +23,7 @@ require_once __DIR__ . "/../config/db.php";
 
   <section>
     <div class="dashboard_heading">
-        <h2>Willkommen in der Galerie, <?php echo $_SESSION["Benutzername"]; ?>!</h2>
+        <h2>Willkommen in der Galerie<?php if(isset($_SESSION["Benutzername"])) echo ", " . $_SESSION["Benutzername"];?>!</h2>
     </div>
     <div class="search_container">
         <form class="search_form" action="dashboard.php" method="post">
@@ -38,14 +41,17 @@ require_once __DIR__ . "/../config/db.php";
                 </select>
 
                 <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
+                <?php  if(isset($_SESSION["NutzerID"])) { ?>
                 <label class="checkbox">
                     <input type="checkbox" name="own_media" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
                 </label>
+                <?php  }?>
             </div>
 
-            <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
+            <!-- Icon um Suche zu leeren -->
             <?php if (($_POST['searchbar'] ?? '') !== '' || ($_POST['media_type'] ?? '') !== '' || !empty($_POST['own_media'])) { ?>
-                <img class="reset" src="/MedienDB/public/icons/reset.svg" alt="Reset" onclick="window.location.href = window.location.pathname">
+                      <img class="reset" src="/MedienDB/public/icons/reset.svg" alt="Reset" onclick="window.location.href = window.location.pathname">
+            
             <?php } ?>
         </form>
 
@@ -104,7 +110,8 @@ require_once __DIR__ . "/../config/db.php";
 
         // Vollstaendige SQL-Anfrage zusammensetzen
         $sql = "
-        SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Path, t.TagName FROM Medium m
+        SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Path, m.NutzerID, n.Benutzername, t.TagName FROM Medium m
+        LEFT JOIN Nutzer n ON m.NutzerID = n.NutzerID
         LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
         LEFT JOIN Tag t ON t.TagID = mht.TagID
         WHERE m.MediumID IN (
@@ -183,8 +190,16 @@ require_once __DIR__ . "/../config/db.php";
 
                 // Allgemeine Info's zum Medium ausgeben
                 printf("<div class='media_description'>");
-                printf("<h4>%s (%s)</h4>",$entry["Titel"], $entry["Datentyp"]);
-                printf("<p>Tags:</p>");
+                printf("<div class='media_info_titel'>
+                          <h4>Titel</h4>
+                          <p>%s (%s)</p>
+                        </div>",$entry["Titel"], $entry["Datentyp"]);
+                printf("<div class='media_info_user'>
+                          <h4>Upload von</h4>  
+                          <p>%s</p>
+                        </div>"
+                       ,$entry['Benutzername']);
+                printf("<h4 class='taglabel'>Tags</h4>");
                 printf("<div class='tag_container'>");
 
                 $lastMediumID = $entry['MediumID'];
@@ -194,8 +209,9 @@ require_once __DIR__ . "/../config/db.php";
             if (!empty($entry['TagName'])) {
                 printf("<p class='tags'>%s</p>", $entry['TagName']);
             } else {
-                printf("<p>Keine</p>");
+                printf("<p class='no_tags'>Keine</p>");
             }
+            
         }
 
         // Schliessen des letzten media_container's, wenn vorhanden
