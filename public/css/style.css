@@ -144,6 +144,8 @@ header {
 p[class="header_user"] {
 	margin-right: 50px; 
 	font-size: 24px;
+	max-width: 500px;
+	overflow: auto;
 }
 
 img[class="header_user"] {
@@ -306,6 +308,7 @@ footer div a:active{
 	border-width: 2px;
 	border-radius: 20px;
 	padding: 10px;
+	height: 300px;
 }
 
 .media_container:hover {
@@ -317,6 +320,7 @@ footer div a:active{
 	width: 50%;
 	padding-right: 5px;
 	object-fit: cover;
+	align-self: center;
 }
 
 .media_description {
@@ -328,7 +332,12 @@ footer div a:active{
 .tag_container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 10px;
+	border-top: 2px solid var(--neutral_2);
+	border-bottom: 2px solid var(--neutral_2);
+	border-radius: 10px;
+	background: var(--primary_2);
+	max-height: 163px;
+	overflow: auto;
 }
 
 .tags {
@@ -336,8 +345,35 @@ footer div a:active{
 	border-width: 1px;
 	border-radius: 10px;
     padding: 2px 4px;
-    margin: 2px;
+    margin: 5px;
     background: var(--neutral_2);
+}
+
+.media_info_titel , .media_info_user {
+	display: flex;
+	margin-top: 5px;
+
+}
+
+.media_info_titel h4 , .media_info_user h4 {
+	flex: 4;
+	margin-top: 1.2px;
+}
+
+.media_info_titel p , .media_info_user p {
+	flex: 6;
+	max-height: 60px;
+	overflow: auto;
+	line-height: 1.2;
+}
+
+.taglabel {
+	text-align: center;
+	margin-top: 5px;
+}
+
+.no_tags {
+	margin-left: 10px;
 }
 
 /* Styling von gallery.php ==================================================*/
@@ -569,7 +605,6 @@ footer div a:active{
 	color: var(--primary_1);
 	border-color: var(--primary_1);
 }
-
 
 /* Styling von login.php ====================================================*/
 

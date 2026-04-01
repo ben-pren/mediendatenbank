@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . "/../includes/auth.php";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . "/../config/db.php";
 
 /* Dashboard Weiterleitung bei fehlender id */
@@ -12,8 +15,10 @@ $id = (int) $_GET['id'];
 $erfolg = "";
 
 /* Medium aus der Datenbank laden */
-$sql = "SELECT MediumID, Titel, Medienart, Datentyp, Groesse, Path, NutzerID
-        FROM Medium WHERE MediumID = $id";
+$sql = "SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Groesse, m.Path, m.NutzerID, n.Benutzername
+        FROM Medium m
+        JOIN Nutzer n ON m.NutzerID = n.NutzerID
+        WHERE MediumID = $id";
 $result = mysqli_query($connection, $sql);
 $medium = $result->fetch_assoc();
 
@@ -24,8 +29,10 @@ if (!$medium) {
 }
 
 /* Besitzer oder Admin */
-$is_owner = $_SESSION['NutzerID'] == $medium['NutzerID']
+if(isset($_SESSION["Benutzername"])) {
+   $is_owner = $_SESSION['NutzerID'] == $medium['NutzerID']
          || $_SESSION['Rolle'] === 'Admin';
+}
 
 /* Löschen */
 if (isset($_POST['loeschen']) && $is_owner) {
@@ -117,7 +124,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 
     <section class="gallery_section">
         <div class="media_details">
-            <?php if ($is_owner && $modus !== 'edit'): ?>
+            <?php if (isset($_SESSION['NutzerID']) && $is_owner && $modus !== 'edit'): ?>
             <a href="gallery.php?id=<?php echo $id; ?>&bearbeiten=1"
                 class="edit_top_button">
                 <img src="../../public/icons/einstellungen.svg" alt="Bearbeiten">
@@ -133,11 +140,10 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
 			$path      = htmlspecialchars($medium['Path']);
 
 			if ($medienart === 'Bild') {
-    		echo "<div style='display:flex; flex-direction:column; gap:8px;'>
+			echo "<div style='display:flex; flex-direction:column; gap:8px;'>
                     <img class='media' src='$path' alt='Vorschau'>
                     <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen</a>
-                </div>
-            ";
+                  </div>";
     		    
 
 			} elseif ($medienart === 'Video') {
@@ -217,6 +223,11 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                             <span class="media_label">Größe</span>
                             <span><?php echo htmlspecialchars($medium['Groesse']); ?></span>
                         </div>
+                        
+                        <div class="media_info_row">
+                            <span class="media_label">Upload von</span>
+                            <span><?php echo htmlspecialchars($medium['Benutzername']); ?></span>
+                        </div>
 
                         <div class="media_options">
                             <button type="submit" name="speichern" class="button">Speichern</button>
@@ -252,11 +263,17 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                         <span class="media_label">Größe</span>
                         <span><?php echo htmlspecialchars($medium['Groesse']); ?></span>
                     </div>
+                    
+                    <div class="media_info_row">
+                            <span class="media_label">Upload von</span>
+                            <span><?php echo htmlspecialchars($medium['Benutzername']); ?></span>
+                    </div>
+                    
 
             </div>
 
                     <div class="media_delete_button_unten">
-                        <?php if ($is_owner): ?>
+                        <?php if (isset($_SESSION['NutzerID']) && $is_owner): ?>
                             <form action="gallery.php?id=<?php echo $id; ?>" method="post"
                                 onsubmit="return confirm('Medium wirklich löschen?')">
                                 <button type="submit" name="loeschen" class="options_button">
