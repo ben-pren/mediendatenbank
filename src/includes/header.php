@@ -35,8 +35,9 @@ $showlogin = isset($_SESSION['NutzerID']);
     <ul class="dropdown_content" id="dropdown_elements">
         <li><a href="/MedienDB/public/index.php">Startseite</a></li>
         
+        <li><a href="/MedienDB/src/pages/dashboard.php">Galerie</a></li>
+        
         <?php if($showlogin): ?>
-            <li><a href="/MedienDB/src/pages/dashboard.php">Galerie</a></li>
 
             <li><a href="/MedienDB/src/pages/media_upload.php">Medienupload</a></li>
             
