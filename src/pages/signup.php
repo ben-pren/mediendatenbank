@@ -73,22 +73,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			<form method="post" action="">
 				<div>
 					<label for="benutzername">Benutzername:</label>
-					<input type="text" name="benutzername" id="benutzername">
+					<input type="text" name="benutzername" id="benutzername" maxlength="45">
 				</div>
 
 				<div>
 					<label for="email">E-Mail:</label>
-					<input type="email" name="email" id="email">
+					<input type="email" name="email" id="email" maxlength="100">
 				</div>
 
 				<div>
 					<label for="passwort">Passwort:</label>
-					<input type="password" name="passwort" id="passwort">
+					<input type="password" name="passwort" id="passwort" maxlength="100">
 				</div>
 
 				<div>
 					<label for="passwort_wiederholen">Passwort erneut eingeben:</label>
-					<input type="password" name="passwort_wiederholen" id="passwort_wiederholen">
+					<input type="password" name="passwort_wiederholen" id="passwort_wiederholen" maxlength="100">
 				</div>
 
 				<div>
