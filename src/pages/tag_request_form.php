@@ -27,8 +27,8 @@ if(isset($_POST['neu_tag']) && !empty($_POST['altered_tag_request'])) {
     $stmt->bind_param("isis", $nutzerID, $neu_tag_name, $tag_id, $kommentar);
     
     if ($stmt->execute()) {
-        // Redirect zurück zur Startseite (public/index.php)
-        echo "<script>alert('Vielen Dank! Deine Anfrage wurde gesendet.'); window.location.href='../../public/index.php';</script>";
+        // Redirect zurück zur Startseite (src/pages/index.php)
+        echo "<script>alert('Vielen Dank! Deine Anfrage wurde gesendet.'); window.location.href='../../src/pages/index.php';</script>";
     } else {
         echo "Fehler beim Senden: " . $connection->error;
     }

@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID']) && iss
     $stmt->bind_param("iss", $nutzerID, $requestedTagName, $kommentar);
     
     if ($stmt->execute()) {
-        // Redirect zurück zur Startseite (public/index.php)
-        echo "<script>alert('Vielen Dank! Deine Anfrage wurde gesendet.'); window.location.href='../../public/index.php';</script>";
+        // Redirect zurück zur Startseite (src/pages/index.php)
+        echo "<script>alert('Vielen Dank! Deine Anfrage wurde gesendet.'); window.location.href='../../src/pages/index.php';</script>";
     } else {
         echo "Fehler beim Senden: " . $connection->error;
     }

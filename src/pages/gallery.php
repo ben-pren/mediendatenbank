@@ -4,295 +4,229 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . "/../config/db.php";
-
-/* Dashboard Weiterleitung bei fehlender id */
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header("Location: dashboard.php");
-    exit();
-}
-
-$id = (int) $_GET['id'];
-$erfolg = "";
-
-/* Medium aus der Datenbank laden */
-$sql = "SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Groesse, m.Path, m.NutzerID, n.Benutzername
-        FROM Medium m
-        JOIN Nutzer n ON m.NutzerID = n.NutzerID
-        WHERE MediumID = $id";
-$result = mysqli_query($connection, $sql);
-$medium = $result->fetch_assoc();
-
-/* Medium exisstiert nicht */
-if (!$medium) {
-    header("Location: dashboard.php");
-    exit();
-}
-
-/* Besitzer oder Admin */
-if(isset($_SESSION["Benutzername"])) {
-   $is_owner = $_SESSION['NutzerID'] == $medium['NutzerID']
-         || $_SESSION['Rolle'] === 'Admin';
-}
-
-/* Löschen */
-if (isset($_POST['loeschen']) && $is_owner) {
-    $file_path = str_replace(
-        "http://localhost/MedienDB/src/",
-        $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src/",
-        $medium['Path']
-    );
-    if (file_exists($file_path)) {
-        unlink($file_path);
-    }
-
-    /* Tags und Medium aus DB entfernen */
-    mysqli_query($connection, "DELETE FROM Medium_has_Tag WHERE MediumID = $id");
-    mysqli_query($connection, "DELETE FROM Medium WHERE MediumID = $id");
-
-    $connection->close();
-    header("Location: dashboard.php");
-    exit();
-}
-
-// Änderung von Titel und Tags
-if (isset($_POST['speichern']) && $is_owner) {
-    /* Neuer Name speichern */
-    if ($medium['Titel'] != $_POST['titel']) {
-        $titel = ($_POST['titel']);
-        mysqli_query($connection, "UPDATE Medium SET Titel = '$titel' WHERE MediumID = $id");
-        $medium['Titel'] = $_POST['titel'];
-        $erfolg = "Änderungen gespeichert.";
-    } 
-    /* Neuer Tags speichern */
-    $tags_new = $_POST['tags'];
-    $connection->begin_transaction(); 
-    
-    try {
-        mysqli_query($connection, "DELETE FROM Medium_has_Tag WHERE MediumID = $id");
-        
-        foreach ($tags_new as $tag_id) {
-            mysqli_query($connection,"INSERT INTO Medium_has_Tag (MediumID, TagID) VALUES ($id, $tag_id)");
-        }
-        
-        $connection->commit();
-        $erfolg = "Änderungen gespeichert.";
-        
-    } catch (Exception $e) {
-        $connection->rollback();
-        $erfolg = "Fehler beim Speichern der Tags.";
-    }
-}
-
-/* Tags des Mediums laden */
-$tags_medium = [];
-$tag_result = mysqli_query($connection,
-    "SELECT t.TagName, t.TagID FROM Tag t
-     JOIN Medium_has_Tag mht ON t.TagID = mht.TagID
-     WHERE mht.MediumID = $id"
-);
-while ($row = $tag_result->fetch_assoc()) {
-    $tags_medium[$row['TagID']] = $row['TagName'];
-}
-
-/* Alle Tags laden*/
-$tags_all = [];
-$tag_result_all = mysqli_query($connection, "SELECT TagID, TagName FROM Tag ORDER BY TagName");
-while ($row = $tag_result_all->fetch_assoc()) {
-    $tags_all[] = $row;
-}
-
-
-
-
-
-/* Bearbeitung */
-$modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 'view';
 ?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mediendatenbank</title>
+    <title>Galerie</title>
     <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
 </head>
 <body>
     <header>
-        <?php include __DIR__ . '/../../src/includes/header.php'; ?>
-    </header>
-    <?php include __DIR__ . '/../includes/background.php'; ?>
+      <?php include  __DIR__ . '/../includes/header.php'; ?>
+  </header>
 
-    <section class="gallery_section">
-        <div class="media_details">
-            <?php if (isset($_SESSION['NutzerID']) && $is_owner && $modus !== 'edit'): ?>
-            <a href="gallery.php?id=<?php echo $id; ?>&bearbeiten=1"
-                class="edit_top_button">
-                <img src="../../public/icons/einstellungen.svg" alt="Bearbeiten">
-            </a>
-            <?php endif; ?>
-            <a href="dashboard.php" class="close_button">
-                <img src="../../public/icons/schliessen.svg" alt="Zurück">
-            </a>
+  <?php include __DIR__ . '/../includes/background.php'; ?>
 
-            <!-- HTML-Element abhängig von Medienart -->
-			<?php
-			$medienart = $medium['Medienart'];
-			$path      = htmlspecialchars($medium['Path']);
+  <section>
+    <div class="gallery_heading">
+        <h2>Willkommen in der Galerie<?php if(isset($_SESSION["Benutzername"])) echo ", " . $_SESSION["Benutzername"];?>!</h2>
+    </div>
+    <div class="search_container">
+        <form class="search_form" action="gallery.php" method="post">
+            <!-- Suchleiste -->
+            <input class="search_bar" type="text" name="searchbar" value="<?php echo htmlspecialchars($_POST['searchbar'] ?? ''); ?>" placeholder="Nach Titel oder Tags suchen (mit Komma trennen)">
 
-			if ($medienart === 'Bild') {
-			echo "<div style='display:flex; flex-direction:column; gap:8px;'>
-                    <img class='media' src='$path' alt='Vorschau'>
-                    <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen</a>
-                  </div>";
-    		    
+            <div class="search_options">
+                <!-- Dropdown zur Auswahl von Medienkategorien -->
+                <select class="dropdown" name="media_type" onchange="this.form.submit()">
+                    <option value="">Alle Kategorien</option>
+                    <option value="picture" <?php if(($_POST['media_type'] ?? '') === 'picture') echo 'selected'; ?>>Bilder</option>
+                    <option value="audiobook" <?php if(($_POST['media_type'] ?? '') === 'audiobook') echo 'selected'; ?>>Hörbücher</option>
+                    <option value="ebook" <?php if(($_POST['media_type'] ?? '') === 'ebook') echo 'selected'; ?>>E-Books</option>
+                    <option value="video" <?php if(($_POST['media_type'] ?? '') === 'video') echo 'selected'; ?>>Videos</option>
+                </select>
 
-			} elseif ($medienart === 'Video') {
-    		echo "
-        		<video class='media' controls>
-            		<source src='$path' type='video/mp4'>
-        		</video>
-    		";
-
-			} elseif ($medienart === 'Hoerbuch') {
-    		echo "
-        		<div class='media media_audio'>
-                    <img src='../../public/icons/hoerbuch.svg' alt='Hörbuch' class='audio_icon'>
-            		<audio controls>
-                		<source src='$path' type='audio/mpeg'>
-            		</audio>
-        		</div>
-    		";
-
-			} elseif ($medienart === 'eBook') {
-                /* Mit Link zur Vollansicht */
-    		echo "
-                <div style='display:flex; flex-direction:column; gap:8px;'>
-                    <iframe class='media' src='$path' title='eBook-Vorschau'></iframe>
-                    <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen </a>
-                </div>
-    		";
-			}
-			?>
-
-            <div class="media_info">
-
-                <?php if ($erfolg): ?>
-                    <p class="media_erfolg"><?php echo $erfolg; ?></p>
-                <?php endif; ?>
-
-                <?php if ($modus === 'edit' && $is_owner): ?>
-
-                    <!-- Bearbeitungsformular -->
-                    <form action="gallery.php?id=<?php echo $id; ?>" method="post">
-
-                        <div class="media_info_row">
-                            <span class="media_label">Titel</span>
-                            <input type="text" name="titel"
-                                   value="<?php echo htmlspecialchars($medium['Titel']); ?>"
-                                   maxlength="100" required>
-                        </div>
-
-                        
-                        <span class="media_label">Tags</span>  
-                        <div class="tags_container">                    
-                              <?php foreach($tags_all as $tag): ?>
-                              <div class="tag">
-                                <input type="checkbox" name="tags[]" value="<?php echo $tag['TagID'] ?>"
-                                	   id="tag_<?php echo $tag['TagID'] ?>" <?php echo isset($tags_medium[$tag['TagID']]) ? 'checked' : ''; ?>
-                               	>
-                               	<label for="tag_<?php echo $tag['TagID']?>" class="tag_label"><?php echo $tag['TagName']?></label>
-                              </div>
-                              <?php endforeach; ?> 	                              
-                            
-                            <?php if (empty($tags_all)): ?>
-                                <p>Keine Tags vorhanden.</p>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="media_info_row">
-                            <span class="media_label">Medienart</span>
-                            <span><?php echo htmlspecialchars($medium['Medienart']); ?></span>
-                        </div>
-
-                        <div class="media_info_row">
-                            <span class="media_label">Datentyp</span>
-                            <span><?php echo htmlspecialchars($medium['Datentyp']); ?></span>
-                        </div>
-
-                        <div class="media_info_row">
-                            <span class="media_label">Größe</span>
-                            <span><?php echo htmlspecialchars($medium['Groesse']); ?></span>
-                        </div>
-                        
-                        <div class="media_info_row">
-                            <span class="media_label">Upload von</span>
-                            <span><?php echo htmlspecialchars($medium['Benutzername']); ?></span>
-                        </div>
-
-                        <div class="media_options">
-                            <button type="submit" name="speichern" class="button">Speichern</button>
-                            <a href="gallery.php?id=<?php echo $id; ?>" class="button" >Abbrechen</a>
-                        </div>
-
-                    </form>
-
-                <?php else: ?>              
-
-                    <!-- Medienansicht -->
-                    <div class="media_info_row">
-                        <span class="media_label">Name</span>
-                        <span><?php echo htmlspecialchars($medium['Titel']); ?></span>
-                    </div>
-
-                    <div class="media_info_row tag_container">
-                        <span class="media_label">Tags</span>
-                        <span><?php echo !empty($tags_medium) ? htmlspecialchars(implode(', ', $tags_medium)) : 'Keine Tags'; ?></span>
-                    </div>
-
-                    <div class="media_info_row">
-                        <span class="media_label">Medienart</span>
-                        <span><?php echo htmlspecialchars($medium['Medienart']); ?></span>
-                    </div>
-
-                    <div class="media_info_row">
-                        <span class="media_label">Datentyp</span>
-                        <span><?php echo htmlspecialchars($medium['Datentyp']); ?></span>
-                    </div>
-
-                    <div class="media_info_row">
-                        <span class="media_label">Größe</span>
-                        <span><?php echo htmlspecialchars($medium['Groesse']); ?></span>
-                    </div>
-                    
-                    <div class="media_info_row">
-                            <span class="media_label">Upload von</span>
-                            <span><?php echo htmlspecialchars($medium['Benutzername']); ?></span>
-                    </div>
-                    
-
+                <!-- Checkbox um nur innerhalb der eigenen Medien zu suchen -->
+                <?php  if(isset($_SESSION["NutzerID"])) { ?>
+                <label class="checkbox">
+                    <input type="checkbox" name="own_media" onchange="this.form.submit()" <?php if(isset($_POST['own_media'])) echo 'checked'; ?>> Nur eigene Medien
+                </label>
+                <?php  }?>
             </div>
 
-                    <div class="media_delete_button_unten">
-                        <?php if (isset($_SESSION['NutzerID']) && $is_owner): ?>
-                            <form action="gallery.php?id=<?php echo $id; ?>" method="post"
-                                onsubmit="return confirm('Medium wirklich löschen?')">
-                                <button type="submit" name="loeschen" class="options_button">
-                                <img class="options" src="../../public/icons/trash-can.svg" alt="Löschen">
-                                </button>
-                            </form>
-                        <?php endif; ?>
-                    </div>
-
-                <?php endif; ?>
-
+            <!-- Icon um Suche zu leeren -->
+            <?php if (($_POST['searchbar'] ?? '') !== '' || ($_POST['media_type'] ?? '') !== '' || !empty($_POST['own_media'])) { ?>
+                      <img class="reset" src="/MedienDB/public/icons/reset.svg" alt="Reset" onclick="window.location.href = window.location.pathname">
             
+            <?php } ?>
+        </form>
 
-        </div>
-    </section>
+        <?php        
+        // verhindert 'undefined' Fehler bei erstaufruf der Seite
+        if(!isset($_POST['searchbar'])) $_POST['searchbar'] = '';
 
-    <footer>
-        <?php include __DIR__ . '/../includes/footer.php'; ?>
-    </footer>
+        // Suchbegriffe (Suchleiste) in einem Array speichern (Trennung durch Kommata)
+        $search_terms = array_map('trim', explode(',', $_POST['searchbar']));
+
+        // Array's fuer die Suchfilter
+        $search_params = [];
+        $filters = [];
+        $having_params = [];
+        
+        // Aus den Suchbegriffen SQL-Klauseln generieren
+        foreach ($search_terms as $term) {
+            $term = addslashes($term);
+            $clause = "(m2.Titel LIKE '%$term%' OR t2.TagName LIKE '%$term%')";
+            $search_params[] = $clause;
+            $having_params[] = "SUM(CASE WHEN $clause THEN 1 ELSE 0 END) > 0";
+        }
+
+        // Aus dem Dropdown-Menue und der Checkbox SQL-Klauseln generieren
+        $media_type = $_POST['media_type'] ?? '';
+
+        if ($media_type === 'picture') {
+            $filters[] = "m.Medienart = 'Bild'";
+        }
+
+        if ($media_type === 'audiobook') {
+            $filters[] = "m.Medienart = 'Hoerbuch'";
+        }
+
+        if ($media_type === 'ebook') {
+            $filters[] = "m.Medienart = 'eBook'";
+        }
+
+        if ($media_type === 'video') {
+            $filters[] = "m.Medienart = 'Video'";
+        }
+
+        if (isset($_POST['own_media'])) {
+            $user_id = $_SESSION['NutzerID'];
+            $filters[] = "m.NutzerID = $user_id";
+        }
+
+        // SQL-Klauseln zusammenfuehren
+        $where_clause = "(" . implode(" OR ", $search_params) . ")";
+
+        if (!empty($filters)) {
+            $where_clause .= " AND " . implode(" AND ", $filters);
+        }
+
+        $having_clause = "(" . implode(" AND ", $having_params) . ")";
+
+        // Vollstaendige SQL-Anfrage zusammensetzen
+        $sql = "
+        SELECT m.MediumID, m.Titel, m.Medienart, m.Datentyp, m.Path, m.NutzerID, n.Benutzername, t.TagName FROM Medium m
+        LEFT JOIN Nutzer n ON m.NutzerID = n.NutzerID
+        LEFT JOIN Medium_has_Tag mht ON m.MediumID = mht.MediumID
+        LEFT JOIN Tag t ON t.TagID = mht.TagID
+        WHERE m.MediumID IN (
+            SELECT m2.MediumID
+            FROM Medium m2
+            LEFT JOIN Medium_has_Tag mht2 ON m2.MediumID = mht2.MediumID
+            LEFT JOIN Tag t2 ON t2.TagID = mht2.TagID
+            WHERE $where_clause
+            GROUP BY m2.MediumID
+            HAVING
+            $having_clause
+            )
+        ORDER BY m.MediumID, t.TagName;
+        ";
+
+        $result = mysqli_query($connection,$sql);
+
+        $entries = [];
+        $unique_entries = [];
+
+        // Anzahl der einmaligen MediumID's bestimmen
+        while ($entry = $result->fetch_assoc()) {
+            $entries[] = $entry;
+            $unique_entries[$entry['MediumID']] = true;
+        }
+
+        $number_of_entries = count($unique_entries);
+
+        if ($number_of_entries === 1) {
+            printf("<p>1 Datensatz gefunden</p>");
+        } else {
+            printf("<p>%s Datensätze gefunden</p>", $number_of_entries);
+        }
+        ?>
+    </div>
+
+    <div class="media_frame">
+        <?php
+        $lastMediumID = null;
+
+        // Ausgabe der Individuellen Datensaetze
+        // Da eine MediumID mehrfach auftaucht, wenn das Medium mehrere Tag's hat muss jeder Datensatz dahingehend geprueft werden
+        // Gehoeren mehrere aufeinanderfolgende Medien zur gleichen ID werden die allgemeinen Info's nur einmal ausgegeben und
+        // anschliessend nur noch die Tag's
+        foreach ($entries as $entry) {
+
+            // Pruefen ob der Datensatz noch zum aktuellen Medium gehoert
+            if ($entry['MediumID'] !== $lastMediumID) {
+
+                // Schliessen des aktuellen media_container's vor dem Wechsel zum Naechsten Datensatz
+                if ($lastMediumID !== null) {
+                    printf("</div>"); // tag_container
+                    printf("</div>"); // media_description
+                    printf("</div>"); // media_container
+                }
+
+                // Verlinkung fuer die Detailansicht beim Anklicken von einem Medium
+                printf("<div class='media_container' onclick=\"window.location='media_details.php?id=%d'\">", $entry["MediumID"]);
+
+                // Auswahl des korrekten Containers fuer das Vorschaubild (Platzhalter fuer eBook's und Video's)
+                if ($entry['Medienart'] === 'Bild') {
+                    printf("<img class='media_preview' src='%s' alt='Error'>", $entry["Path"]);
+                }
+
+                if ($entry['Medienart'] === 'Hoerbuch') {
+                    printf("<img class='media_preview' src='../../public/icons/hoerbuch.svg' alt='Error'>");
+                }
+
+                if ($entry['Medienart'] === 'eBook') {
+                    printf("<img class='media_preview' src='../../public/icons/ebook.svg' alt='Error'>");
+                }
+
+                if ($entry['Medienart'] === 'Video') {
+                    printf("<video class='media_preview' src='%s' preload='auto'></video>", $entry["Path"]);
+                }
+
+                // Allgemeine Info's zum Medium ausgeben
+                printf("<div class='media_description'>");
+                printf("<div class='media_info_titel'>
+                          <h4>Titel</h4>
+                          <p>%s (%s)</p>
+                        </div>",$entry["Titel"], $entry["Datentyp"]);
+                printf("<div class='media_info_user'>
+                          <h4>Upload von</h4>  
+                          <p>%s</p>
+                        </div>"
+                       ,$entry['Benutzername']);
+                printf("<h4 class='taglabel'>Tags</h4>");
+                printf("<div class='tag_container'>");
+
+                $lastMediumID = $entry['MediumID'];
+            }
+
+            // Tag's ausgeben
+            if (!empty($entry['TagName'])) {
+                printf("<p class='tags'>%s</p>", $entry['TagName']);
+            } else {
+                printf("<p class='no_tags'>Keine</p>");
+            }
+            
+        }
+
+        // Schliessen des letzten media_container's, wenn vorhanden
+        if ($lastMediumID !== null) { 
+            printf("</div>"); // tag_container
+            printf("</div>"); // media_description
+            printf("</div>"); // media_container
+        }
+        ?>
+    </div>
+</section>
+
+<footer>
+    <?php include  __DIR__ . '/../includes/footer.php'; ?>
+</footer>
 </body>
 </html>
-<?php $connection->close(); ?>
+<?php $connection->close();?>

@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$_SESSION["Benutzername"] = $nutzer["Benutzername"];
 				$_SESSION["Rolle"] = $nutzer["Rolle"];
 
-				header("Location: dashboard.php");
+				header("Location: gallery.php");
 				exit();
 			} else { 
 				$fehler = "Das eingegebene Passwort ist falsch.";

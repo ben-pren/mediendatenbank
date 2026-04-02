@@ -18,7 +18,7 @@ if (isset($_POST['abmelden'])) {
     }
     session_destroy();
     // Nach dem Abmelden zurück zur Startseite
-    header("Location: /MedienDB/public/index.php");
+    header("Location: /MedienDB/src/pages/index.php");
     exit();
 }
 
@@ -33,9 +33,9 @@ $showlogin = isset($_SESSION['NutzerID']);
     </button>
     
     <ul class="dropdown_content" id="dropdown_elements">
-        <li><a href="/MedienDB/public/index.php">Startseite</a></li>
+        <li><a href="/MedienDB/src/pages/index.php">Startseite</a></li>
         
-        <li><a href="/MedienDB/src/pages/dashboard.php">Galerie</a></li>
+        <li><a href="/MedienDB/src/pages/gallery.php">Galerie</a></li>
         
         <?php if($showlogin): ?>
 
@@ -54,7 +54,7 @@ $showlogin = isset($_SESSION['NutzerID']);
 </nav>
 
 <div class="header_container logo">
-    <a href="/MedienDB/public/index.php">
+    <a href="/MedienDB/src/pages/index.php">
         <img src="/MedienDB/public/icons/LogoMedienDB.svg" alt="Logo MedienHub" class="img_logo">
     </a>
     <h1>MedienHub</h1>
@@ -70,7 +70,7 @@ $showlogin = isset($_SESSION['NutzerID']);
 <?php if($showlogin): ?>
     <div class="header_container header_user_container">
         <img src="/MedienDB/public/icons/benutzer.svg" class="header_user" alt="User Icon">
-        <form action="/MedienDB/public/index.php" method="post" style="display: inline;">
+        <form action="/MedienDB/src/pages/index.php" method="post" style="display: inline;">
             <p class="header_user">
                 <strong><?php echo htmlspecialchars($_SESSION['Benutzername']); ?></strong><br>
                 <button type="submit" name="abmelden" class="logout_button">Abmelden</button>  
