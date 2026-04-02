@@ -252,8 +252,8 @@ footer div a:active{
 }
 
 
-/* Styling von dashboard.php ================================================*/
-.dashboard_heading {
+/* Styling von gallery.php ==================================================*/
+.gallery_heading {
 	display: flex;
 	justify-content: center;
 }
@@ -376,7 +376,7 @@ footer div a:active{
 	margin-left: 10px;
 }
 
-/* Styling von gallery.php ==================================================*/
+/* Styling von media_details.php ============================================*/
 .media_details {
 	display: flex;
 	flex-direction: row;
