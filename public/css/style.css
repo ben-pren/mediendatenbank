@@ -318,6 +318,8 @@ footer div a:active{
 
 .media_preview {
 	width: 50%;
+	max-height: 100%;
+	overflow: hidden;
 	padding-right: 5px;
 	object-fit: cover;
 	align-self: center;
@@ -326,7 +328,9 @@ footer div a:active{
 .media_description {
 	width: 50%;
 	padding-left: 5px;
-	word-break: break-all;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	hyphens: auto;
 }
 
 .tag_container {
@@ -338,6 +342,7 @@ footer div a:active{
 	background: var(--primary_2);
 	max-height: 163px;
 	overflow: auto;
+	scrollbar-width: none;
 }
 
 .tags {
