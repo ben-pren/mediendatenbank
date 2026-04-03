@@ -55,7 +55,7 @@ if (isset($_POST['loeschen']) && $is_owner) {
 }
 
 // Änderung von Titel und Tags
-if (isset($_POST['speichern']) && $is_owner) {
+if (isset($_POST['speichern']) && $is_owner && !empty($_POST['tags'])) {
     /* Neuer Name speichern */
     if ($medium['Titel'] != $_POST['titel']) {
         $titel = ($_POST['titel']);
