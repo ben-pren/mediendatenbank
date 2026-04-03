@@ -256,6 +256,7 @@ footer div a:active{
 .gallery_heading {
 	display: flex;
 	justify-content: center;
+	align-items: center;
 }
 
 .search_container {
