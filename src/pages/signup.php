@@ -50,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<title>Registrieren - Mediendatenbank</title>
 	<!-- Ich hatte hier Probleme mit dem cache, falls das bei euch nicht so ist, einfach ?v=2 löschen -->
 	<link rel="stylesheet" type="text/css" href="../../public/css/style.css?v=2">
+	<link rel="stylesheet" type="text/css" href="../../public/css/signup.css?">
 </head>
 <body>
 	<header>

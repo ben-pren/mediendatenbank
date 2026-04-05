@@ -13,6 +13,7 @@ require_once __DIR__ . "/../config/db.php";
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Galerie</title>
     <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/gallery.css">
 </head>
 <body>
     <header>
@@ -191,15 +192,15 @@ require_once __DIR__ . "/../config/db.php";
                 // Allgemeine Info's zum Medium ausgeben
                 printf("<div class='media_description'>");
                 printf("<div class='media_info_titel'>
-                          <h4>Titel</h4>
+                          <h4>Titel:</h4>
                           <p>%s (%s)</p>
                         </div>",$entry["Titel"], $entry["Datentyp"]);
                 printf("<div class='media_info_user'>
-                          <h4>Upload von</h4>  
+                          <h4>Upload von:</h4>  
                           <p>%s</p>
                         </div>"
                        ,$entry['Benutzername']);
-                printf("<h4 class='taglabel'>Tags</h4>");
+                printf("<h4 class='taglabel'>Tags:</h4>");
                 printf("<div class='tag_container'>");
 
                 $lastMediumID = $entry['MediumID'];
