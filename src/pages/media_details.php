@@ -115,6 +115,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mediendetails</title>
     <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/media_details.css">
 </head>
 <body>
     <header>

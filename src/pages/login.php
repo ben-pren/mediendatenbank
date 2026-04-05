@@ -2,6 +2,11 @@
 require_once __DIR__ . "/../config/db.php";
 session_start();
 
+if (isset($_SESSION["NutzerID"])) {
+	header("Location: index.php");
+	exit();
+}
+
 /* Für die Fehlermeldung */
 $fehler = "";
 
@@ -52,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Login - Mediendatenbank</title>
 	<link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+	<link rel="stylesheet" type="text/css" href="../../public/css/login.css">
 </head>
 <body>
 	<header>
