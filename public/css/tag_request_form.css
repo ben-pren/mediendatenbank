@@ -148,7 +148,7 @@ section {
 	margin: 0 5px 15px 5px;
 }
 
-.contaiener_request_head {
+.container_request_head {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
@@ -170,7 +170,7 @@ section {
 	background-color: var(--primary_2);
 }
 
-.contaiener_request_head div {
+.container_request_head div {
 	flex: 1;
 	overflow: auto;
 	font-weight: bold;
