@@ -143,7 +143,7 @@ $tags_Aendern = array_filter($alleRequests, function($row) {
 	  <h2>Tag-Anfragen</h2>
 	  <h3>Tag Anfragen Neue Tags</h3>
 	  <div class="background">
-        <div class="contaiener_request_head">
+        <div class="container_request_head">
           <div>Gewünschter Tag</div>
           <div class="kommentar">Kommentar</div>
           <div class="kommentar">Admin Kommentar</div>
@@ -170,7 +170,7 @@ $tags_Aendern = array_filter($alleRequests, function($row) {
     <section>   
       <h3>Tag Anfragen Ändern von Tags</h3>      
       <div class="background">
-        <div class="contaiener_request_head">
+        <div class="container_request_head">
           <div>Alter Tag</div>
           <div>Gewünschter Tag</div>
           <div class="kommentar">Kommentar</div>
