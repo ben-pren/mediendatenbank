@@ -6,20 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Impressum</title>
 	<link rel="stylesheet" type="text/css" href="/MedienDB/public/css/style.css">
-
-    <style>
-    section {
-        padding-top: 80px;
-        padding-bottom: 80px;
-        padding-left: 150px;
-        padding-right: 150px;
-    }
-    h2 {
-        text-align: center;
-        margin-top: 30px;
-        font-size: 40px;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/MedienDB/public/css/impressum.css">
 
 </head>
   <header>
