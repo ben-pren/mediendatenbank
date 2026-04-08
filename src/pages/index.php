@@ -6,20 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Mediendatenbank</title>
 	<link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+	<link rel="stylesheet" type="text/css" href="../../public/css/index.css">
 
-	<style>
-        section {
-        	text-align: center;
-    		padding-top: 100px;
-        	padding-bottom: 100px;
-   	 	}
-    	.foto-stil {
-        	width: 180px;
-        	height: 240px;
-        	margin: 17px; /* abstand zwischen bildern */
-        	object-fit: cover; /*passt format an, damit keine verzerrungen entstehen*/
-   	 	}
-    </style>
 </head>
 <body>
 	<header>
