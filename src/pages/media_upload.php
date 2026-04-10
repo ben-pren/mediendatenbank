@@ -43,6 +43,7 @@ function mediaToImg($medientyp) {
     }
     return $icon_path;    
 }
+
 // Gibt alle Tags in Db in array form aus
 function getTags($connection) {
     $all_tags = [];
@@ -57,8 +58,6 @@ function getTags($connection) {
 }
 $all_tags = getTags($connection);
 
-
-
 // Abbrechen von Upload und löschen von Sessiondaten sowie temporären Uploads
 if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
             foreach ($_SESSION['temp_uploads'] as $datei) {
@@ -68,7 +67,6 @@ if (isset($_POST['abbrechen']) && isset($_SESSION['temp_uploads'])) {
             }
             unset($_SESSION['temp_uploads']);
 }
-
 
 // permanentes speichern in DB
 $upload_ziel = $_SERVER['DOCUMENT_ROOT'] . "/MedienDB/src/UserUploads/";
@@ -119,8 +117,6 @@ if (isset($_POST['hochladen']) && isset($_SESSION['temp_uploads'])) {
     unset($_SESSION['temp_uploads']);  
 }
 
-
-
 //Temporäres Speichern der Datein um vor Abbruch zu schützen und Titel zu vergeben
 if(isset($_FILES['userfiles']) && !isset($_SESSION['temp_uploads'])){ 
    $files = $_FILES['userfiles'];
@@ -169,139 +165,133 @@ $anzeige = isset($_SESSION['temp_uploads']) && !empty($_SESSION['temp_uploads'])
 <html lang="de">
 
 <head>
-  <title>Medien Upload</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
-  <link rel="stylesheet" type="text/css" href="../../public/css/upload.css">
+    <title>Medien Upload</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../../public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/upload.css">
 </head>
 
 <body>
-  <header>
-    <?php include '../includes/header.php'; ?>
-  </header>
-  	<?php include __DIR__ . '/../includes/background.php'; ?>
-  <main>
-    <?php if(!$anzeige) {?>
-      <div class="container_beschreibung">
-        <h2>Medien Upload</h2>
-        <p>
-           Hier kannst du Medien auf unsere Website hochladen. Klicke dafür einfach auf den Button 'Dateien auswählen' 
-           und wähle mit 'Strg' + 'Linksklick' aus, welche Dateien du hochladen willst. <br>
-           Nach der Auswahl der Dateien kannst du durch das Klicken auf 'Upload vorbereiten'
-           jedem deiner Uploads einen Titel und passende Tags hinzufügen. <br>
-           Hochladen kannst du hier Bilder, Videos, Hörbücher und eBooks. Folgende Dateiformate sind hier für den Upload zugelassen.
-        </p> 
-      </div>
-      
-      <div class="container_dateiformate">      
-        <div>
-          <img src="../../public/icons/bild.svg" class="medienimg">
-          <p class="font_white">Bilder: <br> png/jpg/jpeg </p>
+    <header>
+        <?php include '../includes/header.php'; ?>
+    </header>
+  	
+    <?php include __DIR__ . '/../includes/background.php'; ?>
+    <main>
+        <?php if(!$anzeige) {?>
+        <div class="container_beschreibung">
+            <h2>Medien Upload</h2>
+            <p>
+               Hier kannst du Medien auf unsere Website hochladen. Klicke dafür einfach auf den Button 'Dateien auswählen' 
+               und wähle mit 'Strg' + 'Linksklick' aus, welche Dateien du hochladen willst. <br>
+               Nach der Auswahl der Dateien kannst du durch das Klicken auf 'Upload vorbereiten'
+               jedem deiner Uploads einen Titel und passende Tags hinzufügen. <br>
+               Hochladen kannst du hier Bilder, Videos, Hörbücher und eBooks. Folgende Dateiformate sind hier für den Upload zugelassen.
+            </p> 
         </div>
-        
-        <div>
-          <img src="../../public/icons/video.svg" class="medienimg">
-          <p class="font_white">Videos: <br> mp4</p>
-        </div>
-        
-        <div>
-          <img src="../../public/icons/hoerbuch.svg" class="medienimg">
-          <p class="font_white">Horbücher: <br> mp3</p>
-        </div>
-        
-        <div>
-          <img src="../../public/icons/ebook.svg" class="medienimg">
-          <p class="font_white">eBooks: <br> html/pdf </p>
-        </div>        
-      </div>
       
-      <div class="container_beschreibung">
-        <p>
-          Falls manche deiner Dateien nicht in den erlaubten Formaten vorliegen, kannst du diese auch online in die gewünschten Formate umwandeln.<br>
-          Zum Beispiel gibt es viele Websites, auf denen du kostenlos EPUB-Dateien (Standardformat für eBooks) in HTML- oder PDF-Dateien
-          umwandeln lassen kannst.
-        </p>
-      </div>
-      
-      
-      <form action="media_upload.php" method="post" enctype="multipart/form-data" class="form_upload">
-        <label for="userfiles"> Dateien auswählen</label>
-        <input 
-          type="file" 
-          id="userfiles" 
-          name="userfiles[]"
-          multiple 
-          accept=".png, .jpg, .jpeg , .mp3, .mp4, .html, .pdf"
-          required
-        >
-        <button type="submit">Upload vorbereiten</button>
-      </form>
-      <p class= "upload_succes"><?php printf($upload_erfolg); ?></p>
-    <?php }?>
-        
-    <?php if($anzeige) {?>
-      <h2>Anpassung von Titel und Tags</h2>
-      
-      <form action="media_upload.php" method="post" class="form_edit">
-      <div class="container_medien">
-        <?php foreach($_SESSION['temp_uploads'] as $datei_index => $datei) {?>
-        <div>
-          <img src=<?php echo mediaToImg($datei['Medienart']);?> class="media_icon">
-          <h3>Datei <?php echo $datei_index + 1?></h3>
-
-          
-            
-              <p>Originaler Titel<br> <?php echo $datei['temp_titel']?></p> <br>
-              <div class="container_mediendetails">
-                <div>Medienart       <br> <?php echo $datei['Medienart']?></div> <br>
-                <div>Datentyp        <br> <?php echo $datei['Datentyp']?></div> <br>
-                <div>Größe           <br> <?php echo $datei['Groesse']?></div> <br>
-              </div>
-          
-          <label for=titel_<?php echo$datei_index?> class="titel_label">Neuer Titel:</label>
-            <input
-              type="text"
-              id="titel_<?php echo$datei_index?>"
-              name="titel_<?php echo$datei_index?>"
-              value="<?php echo$datei['temp_titel']?>" 
-              maxlength="100"
-              required
-          >  <br>
-          
-          
-          <h3>Tagauswahl</h3>
-          <div class="tags_container">
-            <?php foreach ($all_tags as $tag) {?>
-            <div class="tag">      
-              <input 
-                type="checkbox"
-                name="tags_for_<?php echo $datei_index?>[]"
-                id="<?php echo $tag['TagID']?>_<?php echo $datei_index?>"
-			    value="<?php echo $tag['TagID']?>"
-              >
-              <label for="<?php echo $tag['TagID']?>_<?php echo $datei_index?>" class="tag_label"><?php echo $tag['TagName']?></label>
+        <div class="container_dateiformate">      
+            <div>
+                <img src="../../public/icons/bild.svg" class="medienimg">
+                <p class="font_white">Bilder: <br> png/jpg/jpeg </p>
             </div>
-            <?php }?>
-          </div>
-          
-        </div>     
-        <?php }?> 
-      </div> 
-      <div class="container_buttons">
-        <button type="submit" name="hochladen">Dateien hochladen</button>
-        <button type="submit" name="abbrechen">Upload abbrechen</button>
-      </div>  
-      </form>
-    <?php }?>
-  </main>
+        
+            <div>
+                <img src="../../public/icons/video.svg" class="medienimg">
+                <p class="font_white">Videos: <br> mp4</p>
+            </div>
+            
+            <div>
+                <img src="../../public/icons/hoerbuch.svg" class="medienimg">
+                <p class="font_white">Horbücher: <br> mp3</p>
+            </div>
+            
+            <div>
+                <img src="../../public/icons/ebook.svg" class="medienimg">
+                <p class="font_white">eBooks: <br> html/pdf </p>
+            </div>        
+        </div>
+      
+        <div class="container_beschreibung">
+            <p>
+              Falls manche deiner Dateien nicht in den erlaubten Formaten vorliegen, kannst du diese auch online in die gewünschten Formate umwandeln.<br>
+              Zum Beispiel gibt es viele Websites, auf denen du kostenlos EPUB-Dateien (Standardformat für eBooks) in HTML- oder PDF-Dateien
+              umwandeln lassen kannst.
+            </p>
+        </div>
+      
+      
+        <form action="media_upload.php" method="post" enctype="multipart/form-data" class="form_upload">
+            <label for="userfiles"> Dateien auswählen</label>
+            <input 
+              type="file" 
+              id="userfiles" 
+              name="userfiles[]"
+              multiple 
+              accept=".png, .jpg, .jpeg , .mp3, .mp4, .html, .pdf"
+              required
+            >
+            <button type="submit">Upload vorbereiten</button>
+        </form>
+        <p class= "upload_succes"><?php printf($upload_erfolg); ?></p>
+        <?php }?>
+        
+        <?php if($anzeige) {?>
+        <h2>Anpassung von Titel und Tags</h2>
+      
+        <form action="media_upload.php" method="post" class="form_edit">
+            <div class="container_medien">
+                <?php foreach($_SESSION['temp_uploads'] as $datei_index => $datei) {?>
+                <div>
+                    <img src=<?php echo mediaToImg($datei['Medienart']);?> class="media_icon">
+                    <h3>Datei <?php echo $datei_index + 1?></h3>
+                    <p>Originaler Titel<br> <?php echo $datei['temp_titel']?></p> <br>
+                    <div class="container_mediendetails">
+                        <div>Medienart       <br> <?php echo $datei['Medienart']?></div> <br>
+                        <div>Datentyp        <br> <?php echo $datei['Datentyp']?></div> <br>
+                        <div>Größe           <br> <?php echo $datei['Groesse']?></div> <br>
+                    </div>
+              
+                    <label for=titel_<?php echo$datei_index?> class="titel_label">Neuer Titel:</label>
+                    <input
+                      type="text"
+                      id="titel_<?php echo$datei_index?>"
+                      name="titel_<?php echo$datei_index?>"
+                      value="<?php echo$datei['temp_titel']?>" 
+                      maxlength="100"
+                      required
+                    >  <br>
+              
+                    <h3>Tagauswahl</h3>
+                    <div class="tags_container">
+                        <?php foreach ($all_tags as $tag) {?>
+                        <div class="tag">      
+                            <input 
+                            type="checkbox"
+                            name="tags_for_<?php echo $datei_index?>[]"
+                            id="<?php echo $tag['TagID']?>_<?php echo $datei_index?>"
+                            value="<?php echo $tag['TagID']?>"
+                            >
+                            <label for="<?php echo $tag['TagID']?>_<?php echo $datei_index?>" class="tag_label"><?php echo $tag['TagName']?></label>
+                        </div>
+                        <?php }?>
+                    </div>
+              
+                </div>     
+                <?php }?> 
+            </div> 
+            <div class="container_buttons">
+                <button type="submit" name="hochladen">Dateien hochladen</button>
+                <button type="submit" name="abbrechen">Upload abbrechen</button>
+            </div>  
+        </form>
+        <?php }?>
+    </main>
   
-  <footer>
-    <?php include '../includes/footer.php'; ?>
-  </footer>
-  
+    <footer>
+        <?php include '../includes/footer.php'; ?>
+    </footer>
 </body>
 </html>
-
 <?php $connection->close();?>
-

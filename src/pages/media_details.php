@@ -121,6 +121,7 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
     <header>
         <?php include __DIR__ . '/../../src/includes/header.php'; ?>
     </header>
+
     <?php include __DIR__ . '/../includes/background.php'; ?>
 
     <section class="gallery_section">
@@ -146,7 +147,6 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                     <a href='$path' target='_blank' style='text-align:center; font-size:16px;' class='link'>Vollansicht öffnen</a>
                   </div>";
     		    
-
 			} elseif ($medienart === 'Video') {
     		echo "
         		<video class='media' controls>
@@ -270,7 +270,6 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                             <span><?php echo htmlspecialchars($medium['Benutzername']); ?></span>
                     </div>
                     
-
             </div>
 
                     <div class="media_delete_button_unten">
@@ -285,8 +284,6 @@ $modus = (isset($_POST['bearbeiten']) || isset($_GET['bearbeiten'])) ? 'edit' : 
                     </div>
 
                 <?php endif; ?>
-
-            
 
         </div>
     </section>

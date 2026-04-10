@@ -2,7 +2,6 @@
 session_start();
 require_once '../config/db.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID']) && isset($_POST['RequestedTagName'])) {
     $nutzerID = $_SESSION['NutzerID'];
     $requestedTagName = $_POST['RequestedTagName'];
@@ -21,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['NutzerID']) && iss
         echo "Fehler beim Senden: " . $connection->error;
     }
 }
-
 
 $connection->close();
 ?>
