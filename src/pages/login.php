@@ -21,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$login = trim($_POST["nutzer"]);
 	$passwort = trim($_POST["passwort"]);
 
-
 	/*Felder auf Inhalt prüfen*/     
 	if (empty($login) || empty($passwort)) {
 		$fehler = "Bitte gültigen Benutzernamen/E-Mail und Passwort eingeben.";
@@ -63,39 +62,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<header>
 		<?php include __DIR__ . '/../includes/header.php'; ?>
 	</header>
-		<?php include __DIR__ . '/../includes/background.php'; ?>
+	
+	<?php include __DIR__ . '/../includes/background.php'; ?>
+	
 	<section class="login_container">
 		<div class="login_box">
 			<h1>Anmelden</h1>
 		
-		<?php 
-		if (!empty($erfolg)) {
-			echo "<p>$erfolg</p>";
-		}
-		?>
+			<?php 
+			if (!empty($erfolg)) {
+				echo "<p>$erfolg</p>";
+			}
+			?>
 
-		<form method="post" action="">
-			<div>
-				<label for="nutzer">Benutzername oder E-Mail:</label>
-				<input type="text" name="nutzer" id="nutzer">
-			</div>
+			<form method="post" action="">
+				<div>
+					<label for="nutzer">Benutzername oder E-Mail:</label>
+					<input type="text" name="nutzer" id="nutzer">
+				</div>
 
-			<div>
-				<label for="passwort">Passwort:</label>
-				<input type="password" name="passwort" id="passwort">
-			</div>
+				<div>
+					<label for="passwort">Passwort:</label>
+					<input type="password" name="passwort" id="passwort">
+				</div>
 
-			<div>
-				<button type="submit">Login</button>
-			</div>
-			
-			<div class="login_error">
-			  <?php if (!empty($fehler)) {
-			      printf($fehler);
-		            }
-		      ?>
-			</div>
-		</form>
+				<div>
+					<button type="submit">Login</button>
+				</div>
+				
+				<div class="login_error">
+				  <?php if (!empty($fehler)) {
+				      printf($fehler);
+			            }
+			      ?>
+				</div>
+			</form>
 		</div>
 	</section>
 
@@ -104,3 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</footer>
 </body>
 </html>
+<?php 
+$connection->close();
+?>

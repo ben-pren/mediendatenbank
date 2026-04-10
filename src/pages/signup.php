@@ -38,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     }
-
 }
 ?>
 
@@ -56,7 +55,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<header>
 		<?php include __DIR__ . '/../includes/header.php'; ?>
 	</header>
-		<?php include __DIR__ . '/../includes/background.php'; ?>
+
+	<?php include __DIR__ . '/../includes/background.php'; ?>
+	
 	<section class="signup_container">
 		<div class="signup_box">
 			<h1>Registrierung</h1>
@@ -104,3 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	</footer>
 </body>
 </html>
+<?php 
+$connection->close();
+?>

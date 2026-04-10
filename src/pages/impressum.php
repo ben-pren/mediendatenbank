@@ -9,9 +9,11 @@
     <link rel="stylesheet" type="text/css" href="/MedienDB/public/css/impressum.css">
 
 </head>
-  <header>
+
+<header>
     <?php include  __DIR__ . '/../includes/header.php'; ?>
-  </header>
+</header>
+
 <body>
     <section>
         <h2>Impressum</h2>
@@ -30,13 +32,11 @@
             70191 Stuttgart
             <br>
             <br>
-
         </p>
 
         <h3>Kontaktmöglichkeiten</h3>
         <p>
             E-Mail: greta.guntermann@stud.akad.de <br><br><br>
-
         </p>
 
         <hr>

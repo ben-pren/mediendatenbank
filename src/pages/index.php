@@ -13,7 +13,9 @@
 	<header>
 		<?php include  __DIR__ . '/../includes/header.php'; ?>
 	</header>
-		<?php include __DIR__ . '/../includes/background.php'; ?>
+
+	<?php include __DIR__ . '/../includes/background.php'; ?>
+	
 	<section>
 		<h1>Willkommen im MedienHub!</h1>
 		<!-- <h2>H2</h2> -->
@@ -27,11 +29,10 @@
 			<video src="../../public/icons/video1_landingpage.mp4" class="foto-stil" autoplay loop muted></video>
         	<img src="../../public/icons/bild3_landingpage.jpg" class="foto-stil" alt="Vorschau 3: Dackel">
 		</div>
+
 		<p>Wir unterstützen: Fotos, Videos, Hörbücher &amp; eBooks!</p> <br>
 		<p>Schau in der Galerie vorbei, um zu sehen, was andere Nutzer bereits hochgeladen haben, <br>
 		   und melde dich an, um selbst etwas hochzuladen</p>
-
-		<!-- <p class="small">P(klein)</p>-->
 	</section>
 
 	<footer>
